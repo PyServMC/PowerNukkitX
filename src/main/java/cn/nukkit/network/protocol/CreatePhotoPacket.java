@@ -21,13 +21,14 @@ public class CreatePhotoPacket extends DataPacket {
 
     @Override
     public void decode() {
+
     }
 
     @Override
     public void encode() {
         this.reset();
-        this.putLLong(this.id);
-        this.putString(this.photoName);
-        this.putString(this.photoItemName);
+        this.putLLong(id);
+        this.putString(photoName);
+        this.putString(photoItemName);
     }
 }

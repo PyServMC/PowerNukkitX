@@ -7,7 +7,6 @@ import cn.nukkit.blockproperty.BlockProperties;
 import cn.nukkit.blockproperty.BooleanBlockProperty;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.entity.EntityPhysical;
-import cn.nukkit.entity.item.EntityFallingBlock;
 import cn.nukkit.event.block.BlockFadeEvent;
 import cn.nukkit.event.block.BlockFromToEvent;
 import cn.nukkit.item.Item;
@@ -131,7 +130,7 @@ public class BlockBubbleColumn extends BlockTransparentMeta {
 
     @Override
     public void onEntityCollide(Entity entity) {
-        if (entity.canBeMovedByCurrents() || entity instanceof EntityFallingBlock) {
+        if (entity.canBeMovedByCurrents()) {
             if (up().getId() == AIR) {
                 if (getDamage() == 1) {
                     entity.motionY = Math.max(-0.9, entity.motionY - 0.03);

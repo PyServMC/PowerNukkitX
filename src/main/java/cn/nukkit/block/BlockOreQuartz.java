@@ -4,18 +4,16 @@ import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemQuartz;
 import cn.nukkit.item.ItemTool;
-import cn.nukkit.item.MinecraftItemID;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.math.NukkitRandom;
 
-import javax.annotation.Nullable;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author xtypr
  * @since 2015/12/26
  */
-public class BlockOreQuartz extends BlockOre {
+public class BlockOreQuartz extends BlockSolid {
 
     public BlockOreQuartz() {
     }
@@ -72,12 +70,6 @@ public class BlockOreQuartz extends BlockOre {
         } else {
             return Item.EMPTY_ARRAY;
         }
-    }
-
-    @Nullable
-    @Override
-    protected MinecraftItemID getRawMaterial() {
-        return MinecraftItemID.QUARTZ;
     }
 
     @Override

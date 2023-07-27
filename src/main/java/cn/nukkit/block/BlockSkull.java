@@ -5,7 +5,6 @@ package cn.nukkit.block;
  */
 
 import cn.nukkit.Player;
-import cn.nukkit.api.DeprecationDetails;
 import cn.nukkit.api.PowerNukkitDifference;
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.Since;
@@ -224,12 +223,16 @@ public class BlockSkull extends BlockTransparentMeta implements RedstoneComponen
     @Override
     protected AxisAlignedBB recalculateBoundingBox() {
         AxisAlignedBB bb = new SimpleAxisAlignedBB(this.x + 0.25, this.y, this.z + 0.25, this.x + 1 - 0.25, this.y + 0.5, this.z + 1 - 0.25);
-        return switch (this.getBlockFace()) {
-            case NORTH -> bb.offset(0, 0.25, 0.25);
-            case SOUTH -> bb.offset(0, 0.25, -0.25);
-            case WEST -> bb.offset(0.25, 0.25, 0);
-            case EAST -> bb.offset(-0.25, 0.25, 0);
-            default -> bb;
-        };
+        switch (this.getBlockFace()) {
+            case NORTH:
+                return bb.offset(0, 0.25, 0.25);
+            case SOUTH:
+                return bb.offset(0, 0.25, -0.25);
+            case WEST:
+                return bb.offset(0.25, 0.25, 0);
+            case EAST:
+                return bb.offset(-0.25, 0.25, 0);
+        }
+        return bb;
     }
 }

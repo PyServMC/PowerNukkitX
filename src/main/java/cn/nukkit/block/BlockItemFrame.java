@@ -90,11 +90,6 @@ public class BlockItemFrame extends BlockTransparentMeta implements BlockEntityH
         return getBooleanValue(HAS_MAP);
     }
 
-    @Override
-    public boolean isSolid() {
-        return false;
-    }
-
     @PowerNukkitOnly
     @Since("1.4.0.0-PN")
     public void setStoringMap(boolean map) {
@@ -162,7 +157,7 @@ public class BlockItemFrame extends BlockTransparentMeta implements BlockEntityH
     @Since("1.4.0.0-PN")
     @PowerNukkitOnly
     @Override
-    public int onTouch(@Nullable Player player, Action action, BlockFace face) {
+    public int onTouch(@Nullable Player player, Action action) {
         onUpdate(Level.BLOCK_UPDATE_TOUCH);
         if (player != null && action == Action.LEFT_CLICK_BLOCK) {
             return getOrCreateBlockEntity().dropItem(player) ? 1 : 0;
@@ -247,19 +242,19 @@ public class BlockItemFrame extends BlockTransparentMeta implements BlockEntityH
     @Override
     public Item[] getDrops(Item item) {
         BlockEntityItemFrame itemFrame = getBlockEntity();
-        if (itemFrame != null) {
-            itemFrame.dropItem(null);
+        if (itemFrame != null && ThreadLocalRandom.current().nextFloat() <= itemFrame.getItemDropChance()) {
+            return new Item[]{
+                    toItem(), itemFrame.getItem().clone()
+            };
+        } else {
+            return new Item[]{
+                    toItem()
+            };
         }
-        return new Item[]{toItem()};
     }
 
     @Override
     public Item toItem() {
-        BlockEntityItemFrame itemFrame = this.getBlockEntity();
-        if (itemFrame != null) {
-            Item itemInFrame = itemFrame.getItem();
-            return itemInFrame.isNull() ? new ItemItemFrame() : itemInFrame;
-        }
         return new ItemItemFrame();
     }
 

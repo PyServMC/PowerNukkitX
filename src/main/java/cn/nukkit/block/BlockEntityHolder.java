@@ -68,8 +68,7 @@ public interface BlockEntityHolder<E extends BlockEntity> {
                     .putString("id", typeName)
                     .putInt("x", getFloorX())
                     .putInt("y", getFloorY())
-                    .putInt("z", getFloorZ())
-                    .putBoolean("movedV3", true),
+                    .putInt("z", getFloorZ()), 
                 args);
 
         Class<? extends E> entityClass = getBlockEntityClass();

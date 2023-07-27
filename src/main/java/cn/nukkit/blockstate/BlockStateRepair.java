@@ -37,7 +37,7 @@ public class BlockStateRepair {
     @Since("1.4.0.0-PN")
     @NotNull
     BlockProperties properties;
-
+    
     /**
      * The state that was originally received when the repair started.
      */

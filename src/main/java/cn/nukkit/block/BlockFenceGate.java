@@ -96,16 +96,6 @@ public class BlockFenceGate extends BlockTransparentMeta implements RedstoneComp
     }
 
     @Override
-    public boolean canPassThrough() {
-        return isOpen();
-    }
-
-    @Override
-    public boolean canBeFlowedInto() {
-        return isOpen();
-    }
-
-    @Override
     public int getToolType() {
         return ItemTool.TYPE_AXE;
     }
@@ -366,18 +356,5 @@ public class BlockFenceGate extends BlockTransparentMeta implements RedstoneComp
     @Override
     public void setBlockFace(BlockFace face) {
         setPropertyValue(DIRECTION, face);
-    }
-
-    public boolean isBurnable() {
-        switch (this.getId()) {
-          //  case BlockID.FENCE_GATE: cant burn oak (tested in 1.18.10)
-            case BlockID.FENCE_GATE_SPRUCE:
-            case BlockID.FENCE_GATE_BIRCH:
-            case BlockID.FENCE_GATE_JUNGLE:
-            case BlockID.FENCE_GATE_ACACIA:
-            case BlockID.FENCE_GATE_DARK_OAK:
-                return true;
-        }
-        return false;
     }
 }

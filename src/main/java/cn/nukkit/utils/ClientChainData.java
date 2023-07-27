@@ -107,11 +107,6 @@ public final class ClientChainData implements LoginChainData {
         }
     }
 
-    @Override
-    public void setXUID(String xuid) {
-        this.xuid = xuid;
-    }
-
     private boolean xboxAuthed;
 
     @Override
@@ -280,7 +275,7 @@ public final class ClientChainData implements LoginChainData {
                 this.identityPublicKey = chainMap.get("identityPublicKey").getAsString();
         }
 
-        if (!xboxAuthed && Server.getInstance().getCheckXUID()) {
+        if (!xboxAuthed) {
             xuid = null;
         }
     }

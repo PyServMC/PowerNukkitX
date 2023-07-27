@@ -8,8 +8,6 @@ import cn.nukkit.blockentity.BlockEntityBarrel;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
 
-import java.util.Iterator;
-
 @PowerNukkitOnly
 public class BarrelInventory extends ContainerInventory {
 
@@ -27,9 +25,7 @@ public class BarrelInventory extends ContainerInventory {
     public void onOpen(Player who) {
         super.onOpen(who);
 
-        Iterator<Player> viewerIterator = this.getViewers().iterator();
-        Player next = null;
-        if (!who.isSpectator() && (this.getViewers().size() == 1 || (this.getViewers().size() == 2 && (next = viewerIterator.next()).equals(who) ? viewerIterator.next().isSpectator() : (next != null && next.isSpectator())))) {
+        if (this.getViewers().size() == 1) {
             BlockEntityBarrel barrel = this.getHolder();
             Level level = barrel.getLevel();
             if (level != null) {

@@ -14,7 +14,6 @@ import cn.nukkit.level.biome.EnumBiome;
 import cn.nukkit.level.format.generic.BaseFullChunk;
 import cn.nukkit.level.generator.noise.vanilla.f.NoiseGeneratorOctavesF;
 import cn.nukkit.level.generator.noise.vanilla.f.NoiseGeneratorPerlinF;
-import cn.nukkit.level.generator.object.ore.DeepslateOreType;
 import cn.nukkit.level.generator.object.ore.OreType;
 import cn.nukkit.level.generator.populator.impl.*;
 import cn.nukkit.level.generator.populator.type.Populator;
@@ -206,45 +205,19 @@ public class Normal extends Generator {
 
         this.populators = ImmutableList.of(
                 new PopulatorOre(STONE, new OreType[]{
-                        new OreType(Block.get(BlockID.DEEPSLATE), 3, 50, 0, 16),
-                        new OreType(Block.get(BlockID.TUFF), 2, 40, 0, 16),
+                        new OreType(Block.get(BlockID.COAL_ORE), 20, 17, 0, 128),
+                        new OreType(Block.get(BlockID.IRON_ORE), 20, 9, 0, 64),
+                        new OreType(Block.get(BlockID.REDSTONE_ORE), 8, 8, 0, 16),
+                        new OreType(Block.get(BlockID.LAPIS_ORE), 1, 7, 0, 16),
+                        new OreType(Block.get(BlockID.GOLD_ORE), 2, 9, 0, 32),
+                        new OreType(Block.get(BlockID.DIAMOND_ORE), 1, 8, 0, 16),
                         new OreType(Block.get(BlockID.DIRT), 10, 33, 0, 128),
                         new OreType(Block.get(BlockID.GRAVEL), 8, 33, 0, 128),
                         new OreType(Block.get(BlockID.STONE, BlockStone.GRANITE), 10, 33, 0, 80),
                         new OreType(Block.get(BlockID.STONE, BlockStone.DIORITE), 10, 33, 0, 80),
                         new OreType(Block.get(BlockID.STONE, BlockStone.ANDESITE), 10, 33, 0, 80)
                 }),
-                new PopulatorOreDeepslate(new DeepslateOreType[]{
-                        new DeepslateOreType(Block.get(BlockID.COAL_ORE), Block.get(BlockID.DEEPSLATE_COAL_ORE), 6, 12, 0, 128),
-                        new DeepslateOreType(Block.get(BlockID.COAL_ORE), Block.get(BlockID.DEEPSLATE_COAL_ORE), 4, 17, 0, 108),
-                        new DeepslateOreType(Block.get(BlockID.COAL_ORE), Block.get(BlockID.DEEPSLATE_COAL_ORE), 2, 21, 0, 64),
-
-                        new DeepslateOreType(Block.get(BlockID.IRON_ORE), Block.get(BlockID.DEEPSLATE_IRON_ORE), 6, 4, 0, 60),
-                        new DeepslateOreType(Block.get(BlockID.IRON_ORE), Block.get(BlockID.DEEPSLATE_IRON_ORE), 4, 7, 0, 54),
-                        new DeepslateOreType(Block.get(BlockID.IRON_ORE), Block.get(BlockID.DEEPSLATE_IRON_ORE), 2, 8, 0, 52),
-                        new DeepslateOreType(Block.get(BlockID.IRON_ORE), Block.get(BlockID.DEEPSLATE_IRON_ORE), 2, 9, 0, 48),
-
-                        new DeepslateOreType(Block.get(BlockID.REDSTONE_ORE), Block.get(BlockID.DEEPSLATE_REDSTONE_ORE), 1, 4, 0, 16),
-                        new DeepslateOreType(Block.get(BlockID.REDSTONE_ORE), Block.get(BlockID.DEEPSLATE_REDSTONE_ORE), 1, 6, 0, 12),
-                        new DeepslateOreType(Block.get(BlockID.REDSTONE_ORE), Block.get(BlockID.DEEPSLATE_REDSTONE_ORE), 1, 8, 0, 10),
-
-                        new DeepslateOreType(Block.get(BlockID.LAPIS_ORE), Block.get(BlockID.DEEPSLATE_LAPIS_ORE), 1, 4, 16, 34),
-                        new DeepslateOreType(Block.get(BlockID.LAPIS_ORE), Block.get(BlockID.DEEPSLATE_LAPIS_ORE), 1, 6, 0, 12),
-
-                        new DeepslateOreType(Block.get(BlockID.GOLD_ORE), Block.get(BlockID.DEEPSLATE_GOLD_ORE), 2, 4, 28, 34),
-                        new DeepslateOreType(Block.get(BlockID.GOLD_ORE), Block.get(BlockID.DEEPSLATE_GOLD_ORE), 1, 8, 0, 28),
-
-                        new DeepslateOreType(Block.get(BlockID.DIAMOND_ORE), Block.get(BlockID.DEEPSLATE_DIAMOND_ORE), 1, 8, 0, 16),
-                        new DeepslateOreType(Block.get(BlockID.DIAMOND_ORE), Block.get(BlockID.DEEPSLATE_DIAMOND_ORE), 2, 2, 0, 16),
-
-                        new DeepslateOreType(Block.get(BlockID.COPPER_ORE), Block.get(BlockID.DEEPSLATE_COPPER_ORE), 6, 8, 0, 96),
-                        new DeepslateOreType(Block.get(BlockID.COPPER_ORE), Block.get(BlockID.DEEPSLATE_COPPER_ORE), 4, 10, 0, 84),
-                        new DeepslateOreType(Block.get(BlockID.COPPER_ORE), Block.get(BlockID.DEEPSLATE_COPPER_ORE), 2, 16, 0, 64),
-                }),
                 new PopulatorCaves(),
-                new AmethystGeodePopulator(),
-                new PopulatorSpring(BlockState.of(BlockID.FLOWING_WATER), ImmutableList.of(BlockState.of(BlockID.STONE)), 50, 8, 255),
-                new PopulatorSpring(BlockState.of(BlockID.FLOWING_LAVA), ImmutableList.of(BlockState.of(BlockID.STONE)), 20, 16, 255),//,
                 //new PopulatorRavines()
                 new PopulatorSpring(BlockState.of(BlockID.WATER), ImmutableList.of(BlockState.of(BlockID.STONE)), 50, 8, 255),
                 new PopulatorSpring(BlockState.of(BlockID.LAVA), ImmutableList.of(BlockState.of(BlockID.STONE)), 20, 16, 255)

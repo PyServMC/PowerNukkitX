@@ -46,7 +46,6 @@ public class EntityFishingHook extends SlenderProjectile {
     public boolean attracted = false;
     public int attractTimer = 0;
     public boolean caught = false;
-    public Entity caughtEntity;
     public int caughtTimer = 0;
     @SuppressWarnings("java:S1845")
     public boolean canCollide = true;
@@ -279,19 +278,6 @@ public class EntityFishingHook extends SlenderProjectile {
                 targetEntity.setMotion(this.shootingEntity.subtract(targetEntity).divide(8).add(0, 0.3, 0));
             }
         }
-        if (this.shootingEntity instanceof Player) {
-            EntityEventPacket pk = new EntityEventPacket();
-            pk.eid = this.getId();
-            pk.event = EntityEventPacket.FISH_HOOK_TEASE;
-            Server.broadcastPacket(this.getViewers().values(), pk);
-        }
-        if(caughtEntity != null) {
-            if(this.shootingEntity != null) {
-                Vector3 motion = this.shootingEntity.subtract(this).multiply(0.1);
-                motion.y += Math.sqrt(this.shootingEntity.distance(this)) * 0.08;
-                caughtEntity.setMotion(motion);
-            }
-        }
         this.close();
     }
 
@@ -330,15 +316,12 @@ public class EntityFishingHook extends SlenderProjectile {
             ev = new EntityDamageByChildEntityEvent(this.shootingEntity, this, entity, DamageCause.PROJECTILE, damage);
         }
 
-        entity.attack(ev);
-        if(shootingEntity != entity) {
-            setDataProperty(new LongEntityData(DATA_TARGET_EID, entity.getId()));
-            this.caughtEntity = entity;
+        if (entity.attack(ev)) {
             this.setTarget(entity.getId());
         }
     }
 
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     public void checkLure() {
         if (rod != null) {
             Enchantment ench = rod.getEnchantment(Enchantment.ID_LURE);
@@ -348,7 +331,7 @@ public class EntityFishingHook extends SlenderProjectile {
         }
     }
 
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     public void setTarget(long eid) {
         this.setDataProperty(new LongEntityData(DATA_TARGET_EID, eid));
         this.canCollide = eid == 0;

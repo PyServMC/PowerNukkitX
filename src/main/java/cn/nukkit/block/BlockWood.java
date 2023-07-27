@@ -11,9 +11,6 @@ import cn.nukkit.blockproperty.value.WoodType;
 import cn.nukkit.blockstate.BlockState;
 import cn.nukkit.blockstate.IBlockState;
 import cn.nukkit.blockstate.exception.InvalidBlockStateException;
-import cn.nukkit.item.ItemBlock;
-import cn.nukkit.utils.BlockColor;
-
 import org.jetbrains.annotations.NotNull;
 
 import static cn.nukkit.blockproperty.CommonBlockProperties.PILLAR_AXIS;
@@ -51,16 +48,6 @@ public class BlockWood extends BlockLog {
     public int getId() {
         return LOG;
     }
-
-    @Override
-    public ItemBlock asItemBlock(int count) {
-        if ((getDamage() & 0b1100) == 0b1100) {
-            return new ItemBlock(new BlockWoodBark(), this.getDamage() & 0x3, count);
-        } else {
-            return new ItemBlock(this, this.getDamage() & 0x03, count);
-        }
-    }
-
 
     @Since("1.4.0.0-PN")
     @PowerNukkitOnly
@@ -133,29 +120,16 @@ public class BlockWood extends BlockLog {
 
     @PowerNukkitOnly
     @Override
+    @PowerNukkitXDifference(since = "1.20.0-r2", info = "make public")
     public BlockState getStrippedState() {
-        int strippedId;
-        switch (getWoodType()) {
-            default:
-            case OAK:
-                strippedId = STRIPPED_OAK_LOG;
-                break;
-            case SPRUCE:
-                strippedId = STRIPPED_SPRUCE_LOG;
-                break;
-            case BIRCH:
-                strippedId = STRIPPED_BIRCH_LOG;
-                break;
-            case JUNGLE:
-                strippedId = STRIPPED_JUNGLE_LOG;
-                break;
-            case ACACIA:
-                strippedId = STRIPPED_ACACIA_LOG;
-                break;
-            case DARK_OAK:
-                strippedId = STRIPPED_DARK_OAK_LOG;
-                break;
-        }
+        int strippedId = switch (getWoodType()) {
+            case OAK -> STRIPPED_OAK_LOG;
+            case SPRUCE -> STRIPPED_SPRUCE_LOG;
+            case BIRCH -> STRIPPED_BIRCH_LOG;
+            case JUNGLE -> STRIPPED_JUNGLE_LOG;
+            case ACACIA -> STRIPPED_ACACIA_LOG;
+            case DARK_OAK -> STRIPPED_DARK_OAK_LOG;
+        };
         return BlockState.of(strippedId).withProperty(PILLAR_AXIS, getPillarAxis());
     }
 

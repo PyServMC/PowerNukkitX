@@ -4,7 +4,6 @@ import cn.nukkit.Player;
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.Since;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.Level;
 import cn.nukkit.math.BlockFace;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,13 +36,10 @@ public class BlockRootsHanging extends BlockRoots {
     }
 
     @Override
-    public int onUpdate(int type) {
-        if (type == Level.BLOCK_UPDATE_NORMAL) {
-            if(!this.up().isSolid(BlockFace.DOWN)) {
-                this.getLevel().useBreakOn(this);
-            }
-            return type;
+    protected boolean isSupportValid() {
+        if (this.up().isSolid()) {
+            return true;
         }
-        return 0;
+        return false;
     }
 }

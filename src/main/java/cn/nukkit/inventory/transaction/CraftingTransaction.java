@@ -32,10 +32,10 @@ public class CraftingTransaction extends InventoryTransaction {
     protected Item primaryOutput;
 
     @Deprecated
-    @DeprecationDetails(since = "1.6.0.0-PN", reason = "When the recipe is not a CraftingRecipe, this is set to null instead of the recipe",
+    @DeprecationDetails(since = "FUTURE", reason = "When the recipe is not a CraftingRecipe, this is set to null instead of the recipe",
             by = "PowerNukkit", replaceWith = "getTransactionRecipe()")
     @Nullable
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     protected CraftingRecipe recipe;
 
     private Recipe transactionRecipe;
@@ -105,22 +105,22 @@ public class CraftingTransaction extends InventoryTransaction {
     }
 
     @Deprecated
-    @DeprecationDetails(since = "1.6.0.0-PN", reason = "When the recipe is not a CraftingRecipe, returns null instead of the recipe",
+    @DeprecationDetails(since = "FUTURE", reason = "When the recipe is not a CraftingRecipe, returns null instead of the recipe",
         by = "PowerNukkit", replaceWith = "getTransactionRecipe()")
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     @Nullable
     public CraftingRecipe getRecipe() {
         return recipe;
     }
 
     @PowerNukkitOnly
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     public Recipe getTransactionRecipe() {
         return transactionRecipe;
     }
 
     @PowerNukkitOnly
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     protected void setTransactionRecipe(Recipe recipe) {
         this.transactionRecipe = recipe;
         this.recipe = (recipe instanceof CraftingRecipe)? (CraftingRecipe) recipe: null;
@@ -192,12 +192,6 @@ public class CraftingTransaction extends InventoryTransaction {
                     }
                 }
                 break;
-            case Player.CRAFTING_LOOM:
-                inventory = source.getWindowById(Player.LOOM_WINDOW_ID);
-                if(inventory instanceof LoomInventory) {
-                    LoomInventory loom = (LoomInventory) inventory;
-                    addInventory(loom);
-                }
             default:
                 setTransactionRecipe(craftingManager.matchRecipe(inputs, this.primaryOutput, this.secondaryOutputs));
                 break;

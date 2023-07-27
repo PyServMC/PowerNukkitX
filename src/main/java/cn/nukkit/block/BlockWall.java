@@ -7,12 +7,10 @@ import cn.nukkit.api.Since;
 import cn.nukkit.blockproperty.ArrayBlockProperty;
 import cn.nukkit.blockproperty.BlockProperties;
 import cn.nukkit.blockproperty.BlockProperty;
-import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.utils.BlockColor;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -49,15 +47,6 @@ public class BlockWall extends BlockWallBase {
     
     public BlockWall() {
         this(0);
-    }
-
-    @Since("1.4.0.0-PN")
-    @PowerNukkitOnly
-    @Nonnull
-    @Override
-    public ItemBlock asItemBlock(int count) {
-        return new ItemBlock(this, getDamage() & 0xF, count);
-
     }
 
     public BlockWall(int meta) {

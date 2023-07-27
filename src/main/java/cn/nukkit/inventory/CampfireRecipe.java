@@ -11,9 +11,7 @@ import java.util.List;
 public class CampfireRecipe implements SmeltingRecipe {
     private final Item output;
     private Item ingredient;
-    private String recipeId;
-
-    private double experience;
+    private final String recipeId;
 
     @PowerNukkitOnly
     public CampfireRecipe(Item result, Item ingredient) {
@@ -22,14 +20,9 @@ public class CampfireRecipe implements SmeltingRecipe {
 
     @PowerNukkitXOnly
     public CampfireRecipe(@Nullable String recipeId, Item result, Item ingredient) {
-        this(result, ingredient, 0);
         this.recipeId = recipeId == null ? CraftingManager.getMultiItemHash(List.of(ingredient, result)).toString() : recipeId;
-    }
-
-    public CampfireRecipe(Item result, Item ingredient, double experience) {
         this.output = result.clone();
         this.ingredient = ingredient.clone();
-        this.experience = experience;
     }
 
     @Override
@@ -46,11 +39,6 @@ public class CampfireRecipe implements SmeltingRecipe {
     @Override
     public Item getInput() {
         return this.ingredient.clone();
-    }
-
-    @Override
-    public double getExperience() {
-        return experience;
     }
 
     @Override

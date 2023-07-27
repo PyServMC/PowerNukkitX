@@ -49,12 +49,12 @@ public class Location extends Position {
         this(x, y, z, yaw, pitch, 0, level);
     }
 
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     public Location(double x, double y, double z, double yaw, double pitch, double headYaw) {
         this(x, y, z, yaw, pitch, headYaw, null);
     }
 
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     public Location(double x, double y, double z, double yaw, double pitch, double headYaw, Level level) {
         this.x = x;
         this.y = y;
@@ -81,7 +81,7 @@ public class Location extends Position {
         return new Location(pos.x, pos.y, pos.z, yaw, pitch, (level == null) ? ((pos instanceof Position) ? ((Position) pos).level : null) : level);
     }
 
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     public static Location fromObject(Vector3 pos, Level level, double yaw, double pitch, double headYaw) {
         if (level == null && pos instanceof Position) {
             level = ((Position) pos).level;

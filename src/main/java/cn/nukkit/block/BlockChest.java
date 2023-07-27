@@ -242,15 +242,6 @@ public class BlockChest extends BlockTransparentMeta implements Faceable, BlockE
         }
 
         BlockEntityChest chest = getOrCreateBlockEntity();
-        if (!player.isSpectator()) {
-            if (chest.isPaired()) {
-                top = chest.getPair().getSide(BlockFace.UP).getLevelBlock();
-                if (!top.isTransparent()) {
-                    return false;
-                }
-            }
-        }
-
         if (chest.namedTag.contains("Lock") && chest.namedTag.get("Lock") instanceof StringTag 
                 && !chest.namedTag.getString("Lock").equals(item.getCustomName())) {
             return false;
@@ -270,7 +261,7 @@ public class BlockChest extends BlockTransparentMeta implements Faceable, BlockE
         BlockEntityChest blockEntity = getBlockEntity();
 
         if (blockEntity != null) {
-            return ContainerInventory.calculateRedstone(blockEntity.getInventoryWithoutCheckingToPair());
+            return ContainerInventory.calculateRedstone(blockEntity.getInventory());
         }
 
         return super.getComparatorInputOverride();

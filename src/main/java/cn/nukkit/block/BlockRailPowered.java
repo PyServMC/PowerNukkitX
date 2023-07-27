@@ -204,6 +204,7 @@ public class BlockRailPowered extends BlockRail implements RedstoneComponent {
                 && base != Rail.Orientation.ASCENDING_EAST
                 && base != Rail.Orientation.ASCENDING_WEST)
                 && (block.isGettingPower() || checkSurrounding(pos, relative, power + 1));
+
     }
 
     @Override

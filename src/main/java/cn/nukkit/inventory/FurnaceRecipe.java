@@ -12,9 +12,7 @@ import java.util.List;
 public class FurnaceRecipe implements SmeltingRecipe {
     private final Item output;
     private Item ingredient;
-    private String recipeId;
-
-    private double experience;
+    private final String recipeId;
 
     public FurnaceRecipe(Item result, Item ingredient) {
         this(null, result, ingredient);
@@ -22,14 +20,9 @@ public class FurnaceRecipe implements SmeltingRecipe {
 
     @PowerNukkitXOnly
     public FurnaceRecipe(@Nullable String recipeId, Item result, Item ingredient) {
-        this(result, ingredient, 0);
         this.recipeId = recipeId == null ? CraftingManager.getMultiItemHash(List.of(ingredient, result)).toString() : recipeId;
-    }
-
-    public FurnaceRecipe(Item result, Item ingredient, double experience) {
         this.output = result.clone();
         this.ingredient = ingredient.clone();
-        this.experience = experience;
     }
 
     @Override
@@ -49,10 +42,6 @@ public class FurnaceRecipe implements SmeltingRecipe {
     @Override
     public Item getResult() {
         return this.output.clone();
-    }
-
-    public double getExperience() {
-        return experience;
     }
 
     @Override

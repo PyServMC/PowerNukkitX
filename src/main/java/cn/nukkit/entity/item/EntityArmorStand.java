@@ -235,11 +235,6 @@ public class EntityArmorStand extends Entity implements EntityInventoryHolder, E
         return false; // Returning true would consume the item but tryChangeEquipment already manages the inventory
     }
 
-    @Override
-    public Item toItem() {
-        return Item.get(Item.ARMOR_STAND);
-    }
-
     private boolean tryChangeEquipment(Player player, Item handItem, int slot, boolean isArmorSlot) {
         BaseInventory inventory = isArmorSlot ? armorInventory : equipmentInventory;
         Item item = inventory.getItem(slot);
@@ -512,11 +507,10 @@ public class EntityArmorStand extends Entity implements EntityInventoryHolder, E
             double highestPosition = this.highestPosition;
             move(motionX, motionY, motionZ);
 
-            float drag = getDrag();
-            float friction = drag == 0 ? 0 : 1 - drag;
+            float friction = 1 - getDrag();
 
             motionX *= friction;
-            motionY *= 1 - drag;
+            motionY *= 1 - getDrag();
             motionZ *= friction;
 
             updateMovement();
@@ -531,8 +525,8 @@ public class EntityArmorStand extends Entity implements EntityInventoryHolder, E
 
     @Override
     protected float getDrag() {
-        if (hasWaterAt(0.1f)) {
-            return 0.40f;
+        if (hasWaterAt(getHeight() / 2f)) {
+            return 0.25f;
         }
         return 0f;
     }

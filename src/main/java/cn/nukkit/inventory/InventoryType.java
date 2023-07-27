@@ -32,10 +32,11 @@ public enum InventoryType {
     BEACON(1, "Beacon", 13),
     @PowerNukkitXOnly STRUCTURE_EDITOR(0, "StructureBlock", 14),
     // 18 ARMOR
-    COMPOUND_CREATOR(10, "Compound Creator", 20),
-    ELEMENT_CONSTRUCTOR(1, "Element Constructor", 21),
-    MATERIAL_REDUCER(10, "Material Reducer", 22),
-    LAB_TABLE(9, "Lab Table", 23),
+    //COMPOUND_CREATOR typeId:20
+    //ELEMENT_CONSTRUCTOR typeId:21
+    //MATERIAL_REDUCER typeId:22
+    //LAB_TABLE typeId:23
+    // 24 LOOM
     // 25 LECTERN
     // 31 HUD
     // 32 JIGSAW_EDITOR
@@ -47,7 +48,6 @@ public enum InventoryType {
     @PowerNukkitOnly HUD(9, "Cartography Table", 31),
     //@PowerNukkitOnly JIGSAW_EDITOR(3, "Cartography Table", 32),
     @PowerNukkitOnly CHEST_BOAT(27, "Chest Boat", 0),// 34
-    @PowerNukkitOnly LOOM(4, "Loom", 24),
     @PowerNukkitOnly BARREL(27, "Barrel", 0),
     @PowerNukkitOnly CAMPFIRE(4, "Campfire", -9), // -9 = NONE
     @PowerNukkitOnly @Since("1.4.0.0-PN") ENTITY_EQUIPMENT(36, "Entity Equipment", -1), //36 CONTAINER

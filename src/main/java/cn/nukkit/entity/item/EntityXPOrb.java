@@ -155,7 +155,7 @@ public class EntityXPOrb extends Entity {
                 if (this.pickupDelay < 0) {
                     this.pickupDelay = 0;
                 }
-            } else {
+            }/* else { // Done in Player#checkNearEntities
                 for (Entity entity : this.level.getCollidingEntities(this.boundingBox, this)) {
                     if (entity instanceof Player) {
                         if (((Player) entity).pickupEntity(this, false)) {
@@ -163,7 +163,7 @@ public class EntityXPOrb extends Entity {
                         }
                     }
                 }
-            }
+            }*/
 
             this.motionY -= this.getGravity();
 

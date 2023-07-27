@@ -34,12 +34,6 @@ public class BlockOreEmerald extends BlockOre {
     }
 
     @Override
-    public int getToolType() {
-        return ItemTool.TYPE_PICKAXE;
-    }
-
-    @Override
-    @PowerNukkitOnly
     public int getToolTier() {
         return ItemTool.TIER_IRON;
     }

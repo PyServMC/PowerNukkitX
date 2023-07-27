@@ -97,12 +97,16 @@ public class BlockDirt extends BlockSolidMeta {
         if (item.isHoe()) {
             item.useOn(this);
             this.getLevel().setBlock(this, this.getDamage() == 0 ? get(FARMLAND) : get(DIRT), true);
-            player.getLevel().addSound(player, Sound.USE_GRASS);
+            if (player != null) {
+                player.getLevel().addSound(player, Sound.USE_GRASS);
+            }
             return true;
         } else if (item.isShovel()) {
             item.useOn(this);
             this.getLevel().setBlock(this, Block.get(BlockID.GRASS_PATH));
-            player.getLevel().addSound(player, Sound.USE_GRASS);
+            if (player != null) {
+                player.getLevel().addSound(player, Sound.USE_GRASS);
+            }
             return true;
         }
 

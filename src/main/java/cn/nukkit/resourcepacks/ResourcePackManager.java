@@ -16,7 +16,7 @@ import java.util.*;
 public class ResourcePackManager {
 
     private int maxChunkSize = 1024 * 32;// 32kb is default
-
+    
     private final Map<UUID, ResourcePack> resourcePacksById = new HashMap<>();
     private final Set<ResourcePack> resourcePacks = new HashSet<>();
     private final Set<ResourcePackLoader> loaders;
@@ -49,13 +49,13 @@ public class ResourcePackManager {
     public ResourcePack getPackById(UUID id) {
         return this.resourcePacksById.get(id);
     }
-
+    
     @PowerNukkitOnly
     @Since("1.5.2.0-PN")
     public int getMaxChunkSize() {
         return this.maxChunkSize;
     }
-
+    
     @PowerNukkitOnly
     @Since("1.5.2.0-PN")
     public void setMaxChunkSize(int size) {
@@ -79,20 +79,7 @@ public class ResourcePackManager {
             this.resourcePacks.addAll(loadedPacks);
         });
 
-        if (Server.getInstance().isEducationEditionEnabled()) {
-            // Chemistry Resource Pack
-            ResourcePack resourcePack = new ChemistryResourcePack();
-            this.resourcePacksById.put(resourcePack.getPackId(), resourcePack);
-
-            // Chemistry Behavior Pack
-            ResourcePack behaviorPack = new ChemistryBehaviorPack();
-            this.resourcePacksById.put(behaviorPack.getPackId(), behaviorPack);
-
-            Server.getInstance().getLogger().info(Server.getInstance().getLanguage()
-                    .translateString("nukkit.resources.chemistry.success"));
-        }
-
         log.info(Server.getInstance().getLanguage()
-                .tr("nukkit.resources.success", String.valueOf(this.resourcePacks.size() + this.resourcePacksById.size())));
+                .tr("nukkit.resources.success", String.valueOf(this.resourcePacks.size())));
     }
 }

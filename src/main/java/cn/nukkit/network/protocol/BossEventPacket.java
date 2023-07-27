@@ -1,8 +1,5 @@
 package cn.nukkit.network.protocol;
 
-import cn.nukkit.api.DeprecationDetails;
-import cn.nukkit.api.PowerNukkitOnly;
-import cn.nukkit.api.Since;
 import lombok.ToString;
 
 /**
@@ -91,7 +88,7 @@ public class BossEventPacket extends DataPacket {
             case TYPE_SHOW:
                 this.putString(this.title);
                 this.putLFloat(this.healthPercent);
-            case TYPE_UPDATE_PROPERTIES:
+            case TYPE_UNKNOWN_6:
                 this.putShort(this.unknown);
             case TYPE_TEXTURE:
                 this.putUnsignedVarInt(this.color);
