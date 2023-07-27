@@ -2,17 +2,22 @@ package cn.nukkit.inventory;
 
 import cn.nukkit.Player;
 import cn.nukkit.api.PowerNukkitDifference;
+import cn.nukkit.block.BlockTrappedChest;
 import cn.nukkit.api.PowerNukkitXOnly;
 import cn.nukkit.api.Since;
 import cn.nukkit.blockentity.BlockEntityChest;
+import cn.nukkit.event.redstone.RedstoneUpdateEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
 import cn.nukkit.network.protocol.BlockEventPacket;
 import cn.nukkit.network.protocol.InventorySlotPacket;
 import org.jetbrains.annotations.NotNull;
+import cn.nukkit.utils.LevelException;
+import cn.nukkit.utils.RedstoneComponent;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -113,6 +118,8 @@ public class DoubleChestInventory extends ContainerInventory implements Inventor
                 } else if (this.right.slots.containsKey(i - this.left.size)) {
                     this.clear(i);
                 }
+            } else if (!this.setItem(i, items.get(i))) {
+                this.clear(i);
             }
         }
     }
@@ -124,7 +131,9 @@ public class DoubleChestInventory extends ContainerInventory implements Inventor
         this.left.viewers.add(who);
         this.right.viewers.add(who);
 
-        if (this.getViewers().size() == 1) {
+        Iterator<Player> viewerIterator = this.getViewers().iterator();
+        Player next = null;
+        if (!who.isSpectator() && (this.getViewers().size() == 1 || (this.getViewers().size() == 2 && (next = viewerIterator.next()).equals(who) ? viewerIterator.next().isSpectator() : (next != null && next.isSpectator())))) {
             BlockEventPacket pk1 = new BlockEventPacket();
             pk1.x = (int) this.left.getHolder().getX();
             pk1.y = (int) this.left.getHolder().getY();
@@ -150,12 +159,31 @@ public class DoubleChestInventory extends ContainerInventory implements Inventor
                 level.addChunkPacket((int) this.right.getHolder().getX() >> 4, (int) this.right.getHolder().getZ() >> 4, pk2);
             }
         }
+        try {
+            if (this.left.getHolder().getBlock() instanceof BlockTrappedChest trappedChest) {
+                RedstoneUpdateEvent event = new RedstoneUpdateEvent(trappedChest);
+                this.getHolder().level.getServer().getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    RedstoneComponent.updateAllAroundRedstone(this.getHolder());
+                }
+            }
+            if (this.right.getHolder().getBlock() instanceof BlockTrappedChest trappedChest) {
+                RedstoneUpdateEvent event = new RedstoneUpdateEvent(trappedChest);
+                this.getHolder().level.getServer().getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    RedstoneComponent.updateAllAroundRedstone(this.getHolder());
+                }
+            }
+        } catch (LevelException ignored) {
+        }
     }
 
     @PowerNukkitDifference(info = "Using new method to play sounds", since = "1.4.0.0-PN")
     @Override
     public void onClose(Player who) {
-        if (this.getViewers().size() == 1) {
+        Iterator<Player> viewerIterator = this.getViewers().iterator();
+        Player next = null;
+        if (!who.isSpectator() && (this.getViewers().size() == 1 || (this.getViewers().size() == 2 && (next = viewerIterator.next()).equals(who) ? viewerIterator.next().isSpectator() : (next != null && next.isSpectator())))) {
             BlockEventPacket pk1 = new BlockEventPacket();
             pk1.x = (int) this.right.getHolder().getX();
             pk1.y = (int) this.right.getHolder().getY();

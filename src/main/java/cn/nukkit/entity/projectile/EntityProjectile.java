@@ -299,7 +299,7 @@ public abstract class EntityProjectile extends Entity {
     @Since("1.4.0.0-PN")
     @Deprecated
     @DeprecationDetails(
-            by = "PowerNukkit", since = "FUTURE", reason = "Bad method name", replaceWith = "getHasAge",
+            by = "PowerNukkit", since = "1.6.0.0-PN", reason = "Bad method name", replaceWith = "getHasAge",
             toBeRemovedAt = "1.7.0.0-PN")
     public boolean hasAge() {
         return getHasAge();
@@ -309,7 +309,7 @@ public abstract class EntityProjectile extends Entity {
     @Since("1.4.0.0-PN")
     @Deprecated
     @DeprecationDetails(
-            by = "PowerNukkit", since = "FUTURE", reason = "Bad method name", replaceWith = "setHasAge",
+            by = "PowerNukkit", since = "1.6.0.0-PN", reason = "Bad method name", replaceWith = "setHasAge",
             toBeRemovedAt = "1.7.0.0-PN")
     public void setAge(boolean hasAge) {
         setHasAge(hasAge);

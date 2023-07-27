@@ -335,12 +335,12 @@ public class EntityThrownTrident extends SlenderProjectile {
         return Entity.createEntity(type.toString(), chunk, nbt, args);
     }
 
-    @Since("FUTURE")
+    @Since("1.6.0.0-PN")
     public int getPickupMode() {
         return this.pickupMode;
     }
 
-    @Since("FUTURE")
+    @Since("1.6.0.0-PN")
     public void setPickupMode(int pickupMode) {
         this.pickupMode = pickupMode;
     }
@@ -410,7 +410,7 @@ public class EntityThrownTrident extends SlenderProjectile {
     @PowerNukkitOnly
     @Since("1.4.0.0-PN")
     @Deprecated
-    @DeprecationDetails(since = "FUTURE", by = "PowerNukkit", replaceWith = "setPickupMode(EntityProjectile.PICKUP_<MODE>)",
+    @DeprecationDetails(since = "1.6.0.0-PN", by = "PowerNukkit", replaceWith = "setPickupMode(EntityProjectile.PICKUP_<MODE>)",
             reason = "Nukkit added this API in 3-states, NONE, ANY, and CREATIVE")
     public void setCreative(boolean isCreative) {
         if (isCreative) {

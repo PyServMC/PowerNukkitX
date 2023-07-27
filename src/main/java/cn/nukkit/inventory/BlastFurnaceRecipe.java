@@ -11,7 +11,9 @@ import java.util.List;
 public class BlastFurnaceRecipe implements SmeltingRecipe {
     private final Item output;
     private Item ingredient;
-    private final String recipeId;
+    private String recipeId;
+
+    private double experience;
 
     @PowerNukkitOnly
     public BlastFurnaceRecipe(Item result, Item ingredient) {
@@ -20,9 +22,14 @@ public class BlastFurnaceRecipe implements SmeltingRecipe {
 
     @PowerNukkitXOnly
     public BlastFurnaceRecipe(@Nullable String recipeId, Item result, Item ingredient) {
+        this(result, ingredient, 0);
         this.recipeId = recipeId == null ? CraftingManager.getMultiItemHash(List.of(ingredient, result)).toString() : recipeId;
+    }
+
+    public BlastFurnaceRecipe(Item result, Item ingredient, double experience) {
         this.output = result.clone();
         this.ingredient = ingredient.clone();
+        this.experience = experience;
     }
 
     @PowerNukkitOnly
@@ -39,6 +46,11 @@ public class BlastFurnaceRecipe implements SmeltingRecipe {
     @Override
     public String getRecipeId() {
         return null;
+    }
+
+    @Override
+    public double getExperience() {
+        return experience;
     }
 
     @Override

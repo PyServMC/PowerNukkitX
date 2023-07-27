@@ -1,5 +1,7 @@
 package cn.nukkit.network.protocol;
 
+import cn.nukkit.api.DeprecationDetails;
+import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.Since;
 import cn.nukkit.inventory.transaction.data.ReleaseItemData;
 import cn.nukkit.inventory.transaction.data.TransactionData;
@@ -45,8 +47,14 @@ public class InventoryTransactionPacket extends DataPacket {
     public TransactionData transactionData;
     public final List<LegacySetItemSlotData> legacySlots = new ObjectArrayList<>();
 
+
     @Since("1.3.0.0-PN")
-    public int legacyRequestId;
+    @PowerNukkitOnly("Backward compatibility")
+    @Deprecated
+    @DeprecationDetails(since = "1.4.0.0-PN", reason = "Removed from NukkitX", toBeRemovedAt = "1.5.0.0-PN")
+    public boolean hasNetworkIds;
+
+    @Since("1.3.0.0-PN") public int legacyRequestId;
 
     /**
      * NOTE: THESE FIELDS DO NOT EXIST IN THE PROTOCOL, it's merely used for convenience for us to easily

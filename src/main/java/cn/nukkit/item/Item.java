@@ -360,10 +360,12 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[ELYTRA] = ItemElytra.class; //444
             list[SHULKER_SHELL] = ItemShulkerShell.class; //445
             list[BANNER] = ItemBanner.class; //446
-
+            list[MEDICINE] = ItemMedicine.class; //447
+            list[BALLOON] = ItemBalloon.class; //448
             list[TOTEM] = ItemTotem.class; //450
 
             list[IRON_NUGGET] = ItemNuggetIron.class; //452
+            list[ICE_BOMB] = ItemIceBomb.class; //453
 
             list[TRIDENT] = ItemTrident.class; //455
             list[BEETROOT] = ItemBeetroot.class; //457
@@ -387,6 +389,8 @@ public class Item implements Cloneable, BlockID, ItemID {
             list[ACACIA_SIGN] = ItemAcaciaSign.class; //475
             list[DARKOAK_SIGN] = ItemDarkOakSign.class; //476
             list[SWEET_BERRIES] = ItemSweetBerries.class; //477
+
+            list[COMPOUND] = ItemCompound.class; //499
 
             list[RECORD_13] = ItemRecord13.class; //500
             list[RECORD_CAT] = ItemRecordCat.class; //501
@@ -455,7 +459,6 @@ public class Item implements Cloneable, BlockID, ItemID {
 
             list[AMETHYST_SHARD] = ItemAmethystShard.class; //771
             list[SPYGLASS] = ItemSpyglass.class; //772
-
             list[SOUL_CAMPFIRE] = ItemCampfireSoul.class; //801
 
 
@@ -478,7 +481,13 @@ public class Item implements Cloneable, BlockID, ItemID {
                     log.warn("Failed to cache the namespaced id resolution of the item {}", aClass, e);
                 }
             }
-            registerInternalStringItem(runtimeMapping);
+
+            runtimeMapping.registerNamespacedIdItem(ItemRawIron.class);
+            runtimeMapping.registerNamespacedIdItem(ItemRawGold.class);
+            runtimeMapping.registerNamespacedIdItem(ItemRawCopper.class);
+            runtimeMapping.registerNamespacedIdItem(ItemGlowInkSac.class);
+            runtimeMapping.registerNamespacedIdItem(ItemIngotCopper.class);
+            runtimeMapping.registerNamespacedIdItem(ItemBannerPatternGlobe.class);
         }
 
         initCreativeItems();
@@ -532,7 +541,7 @@ public class Item implements Cloneable, BlockID, ItemID {
     private static final ArrayList<Item> creative = new ArrayList<>();
 
     @SneakyThrows(IOException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static void initCreativeItems() {
         clearCreativeItems();
 
@@ -540,6 +549,12 @@ public class Item implements Cloneable, BlockID, ItemID {
         List<Map<String, Object>> list;
         try (InputStream resourceAsStream = Server.class.getModule().getResourceAsStream("creativeitems.json")) {
             list = gson.fromJson(new InputStreamReader(resourceAsStream), List.class);
+        }
+
+        if (Server.getInstance().isEducationEditionEnabled()) {
+            try (InputStream resourceAsStream = Server.class.getModule().getResourceAsStream("creativeitems_edu.json")) {
+                list.addAll(gson.fromJson(new InputStreamReader(resourceAsStream), List.class));
+            }
         }
 
         for (Map<String, Object> map : list) {
@@ -637,9 +652,9 @@ public class Item implements Cloneable, BlockID, ItemID {
     @PowerNukkitXOnly
     @Since("1.6.0.0-PNX")
     public static OK<?> registerCustomItem(@NotNull List<Class<? extends CustomItem>> itemClassList) {
-        if (!Server.getInstance().isEnableExperimentMode() || Server.getInstance().getConfig("settings.waterdogpe", false)) {
+        /*if (!Server.getInstance().isEnableExperimentMode() || Server.getInstance().getConfig("settings.waterdogpe", false)) {
             return new OK<>(false, "The server does not have the custom item feature enabled. Unable to register the customItemList!");
-        }
+        }*/
         for (var clazz : itemClassList) {
             CustomItem customItem;
             Supplier<Item> supplier;
@@ -848,10 +863,12 @@ public class Item implements Cloneable, BlockID, ItemID {
         return get(id, meta, count, EmptyArrays.EMPTY_BYTES);
     }
 
+    public static Item get(int id, Integer meta, int count, byte[] tags) { return get(id, meta, count, tags, 0); }
+
     @PowerNukkitDifference(
             info = "Prevents players from getting invalid items by limiting the return to the maximum damage defined in Block.getMaxItemDamage()",
             since = "1.4.0.0-PN")
-    public static Item get(int id, Integer meta, int count, byte[] tags) {
+    public static Item get(int id, Integer meta, int count, byte[] tags, int blockRuntimeId) {
         try {
             Class<?> c;
             if (id < 255 - Block.MAX_BLOCK_ID) {
@@ -876,7 +893,12 @@ public class Item implements Cloneable, BlockID, ItemID {
                     // Special case for item instances used in fuzzy recipes
                     item = new ItemBlock(Block.get(blockId), -1);
                 } else {
-                    BlockState state = BlockState.of(blockId, meta);
+                    BlockState state;
+                    if (blockRuntimeId == 0) {
+                        state = BlockState.of(blockId, meta);
+                    } else {
+                        state = BlockStateRegistry.getBlockStateByRuntimeId(blockRuntimeId);
+                    }
                     try {
                         state.validate();
                         item = state.asItemBlock(count);
@@ -915,8 +937,6 @@ public class Item implements Cloneable, BlockID, ItemID {
         }
     }
 
-    @PowerNukkitDifference(since = "1.4.0.0-PN", info = "Improve namespaced name handling and allows to get custom blocks by name")
-    @NotNull
     public static Item fromString(String str) {
         String normalized = str.trim().replace(' ', '_').toLowerCase();
         Matcher matcher = ITEM_STRING_PATTERN.matcher(normalized);
@@ -1153,6 +1173,64 @@ public class Item implements Cloneable, BlockID, ItemID {
     @Since("1.6.0.0-PNX")
     public boolean applyEnchantments() {
         return true;
+    }
+
+    public boolean hasCustomEntityData() {
+        if (!this.hasCompoundTag()) {
+            return false;
+        }
+
+        CompoundTag tag = this.getNamedTag();
+        return tag.contains("EntityTag") && tag.get("EntityTag") instanceof CompoundTag;
+
+    }
+
+    public Item clearCustomEntityData() {
+        if (!this.hasCompoundTag()) {
+            return this;
+        }
+        CompoundTag tag = this.getNamedTag();
+
+        if (tag.contains("EntityTag") && tag.get("EntityTag") instanceof CompoundTag) {
+            tag.remove("EntityTag");
+            this.setNamedTag(tag);
+        }
+
+        return this;
+    }
+
+    public Item setCustomEntityData(CompoundTag compoundTag) {
+        CompoundTag tags = compoundTag.copy();
+        tags.setName("EntityTag");
+
+        CompoundTag tag;
+        if (!this.hasCompoundTag()) {
+            tag = new CompoundTag();
+        } else {
+            tag = this.getNamedTag();
+        }
+
+        tag.putCompound("EntityTag", tags);
+        this.setNamedTag(tag);
+
+        return this;
+    }
+
+    public CompoundTag getCustomEntityData() {
+        if (!this.hasCompoundTag()) {
+            return null;
+        }
+
+        CompoundTag tag = this.getNamedTag();
+
+        if (tag.contains("EntityTag")) {
+            Tag bet = tag.get("EntityTag");
+            if (bet instanceof CompoundTag) {
+                return (CompoundTag) bet;
+            }
+        }
+
+        return null;
     }
 
     public boolean hasEnchantments() {

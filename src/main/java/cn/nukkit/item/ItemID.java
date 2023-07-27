@@ -229,9 +229,13 @@ public interface ItemID {
     int ELYTRA = 444;
     int SHULKER_SHELL = 445;
     int BANNER = 446;
+    int MEDICINE = 447;
+    int BALLOON = 448;
     int TOTEM = 450;
 
     int IRON_NUGGET = 452;
+
+    int ICE_BOMB = 453;
 
     int TRIDENT = 455;
 
@@ -258,6 +262,8 @@ public interface ItemID {
     @PowerNukkitOnly int DARKOAK_SIGN = 476;
     @PowerNukkitOnly int DARK_OAK_SIGN = 476;
     int SWEET_BERRIES = 477;
+
+    int COMPOUND = 499;
 
     int RECORD_13 = 500;
     int RECORD_CAT = 501;

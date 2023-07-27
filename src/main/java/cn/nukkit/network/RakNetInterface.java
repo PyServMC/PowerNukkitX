@@ -36,13 +36,10 @@ import java.util.concurrent.TimeUnit;
 public class RakNetInterface implements RakNetServerListener, AdvancedSourceInterface {
 
     private final Server server;
-
-    private Network network;
-
     private final RakNetServer raknet;
+    private Network network;
     private final Map<InetSocketAddress, RakNetPlayerSession> sessions = new HashMap<>();
     private final Queue<RakNetPlayerSession> sessionCreationQueue = PlatformDependent.newMpscQueue();
-
     private byte[] advertisement;
 
     public RakNetInterface(Server server) {

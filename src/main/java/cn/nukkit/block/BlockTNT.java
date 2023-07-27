@@ -21,6 +21,7 @@ import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.DoubleTag;
 import cn.nukkit.nbt.tag.FloatTag;
 import cn.nukkit.nbt.tag.ListTag;
+import cn.nukkit.utils.BlockColor;
 import cn.nukkit.utils.RedstoneComponent;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,8 +31,9 @@ import javax.annotation.Nullable;
  * @author xtypr
  * @since 2015/12/8
  */
+
 @PowerNukkitDifference(info = "Implements RedstoneComponent.", since = "1.4.0.0-PN")
-public class BlockTNT extends BlockSolid implements RedstoneComponent {
+public class BlockTNT extends BlockSolidMeta implements RedstoneComponent {
 
     @PowerNukkitOnly
     @Since("1.5.0.0-PN")
@@ -46,18 +48,18 @@ public class BlockTNT extends BlockSolid implements RedstoneComponent {
     public static final BlockProperties PROPERTIES = new BlockProperties(EXPLODE_ON_BREAK, ALLOW_UNDERWATER);
 
     public BlockTNT() {
+        this(0);
     }
-
-    @Override
-    public String getName() {
-        return "TNT";
+    
+    public BlockTNT(int meta) {
+        super(meta);
     }
-
+    
     @Override
     public int getId() {
         return TNT;
     }
-
+  
     @Since("1.4.0.0-PN")
     @PowerNukkitOnly
     @NotNull
@@ -65,36 +67,41 @@ public class BlockTNT extends BlockSolid implements RedstoneComponent {
     public BlockProperties getProperties() {
         return PROPERTIES;
     }
-
+    
+    @Override
+    public String getName() {
+        return (isUnderwaterAllowed()) ? "Underwater TNT" : "TNT";
+    }
+  
     @Override
     public double getHardness() {
         return 0;
     }
-
+    
     @Override
     public double getResistance() {
         return 0;
     }
-
+    
     @Override
     public boolean canBeActivated() {
         return true;
     }
-
+    
     @Override
     public int getBurnChance() {
         return 15;
     }
-
+    
     @Override
     public int getBurnAbility() {
         return 100;
     }
-
+    
     public void prime() {
         this.prime(80);
     }
-
+    
     public void prime(int fuse) {
         prime(fuse, null);
     }
@@ -115,7 +122,8 @@ public class BlockTNT extends BlockSolid implements RedstoneComponent {
                 .putList(new ListTag<FloatTag>("Rotation")
                         .add(new FloatTag("", 0))
                         .add(new FloatTag("", 0)))
-                .putShort("Fuse", fuse);
+                .putShort("Fuse", fuse)
+                .putBoolean("AllowUnderwater", isUnderwaterAllowed());
         Entity tnt = Entity.createEntity("PrimedTnt",
                 this.getLevel().getChunk(this.getFloorX() >> 4, this.getFloorZ() >> 4),
                 nbt, source
@@ -126,7 +134,7 @@ public class BlockTNT extends BlockSolid implements RedstoneComponent {
         tnt.spawnToAll();
         this.level.getVibrationManager().callVibrationEvent(new VibrationEvent(source != null ? source : this, this.add(0.5, 0.5, 0.5), VibrationType.PRIME_FUSE));
     }
-
+    
     @Override
     @PowerNukkitDifference(info = "Using new method for checking if powered", since = "1.4.0.0-PN")
     public int onUpdate(int type) {
@@ -140,7 +148,7 @@ public class BlockTNT extends BlockSolid implements RedstoneComponent {
 
         return 0;
     }
-
+    
     @Override
     public boolean onActivate(@NotNull Item item, @Nullable Player player) {
         if (item.getId() == Item.FLINT_STEEL) {
@@ -158,7 +166,31 @@ public class BlockTNT extends BlockSolid implements RedstoneComponent {
         }
         return false;
     }
-
+    
+    @Override
+    public boolean onBreak(Item item) {
+        if (isUnderwaterAllowed()) {
+            this.prime();
+        }
+        return super.onBreak(item);
+    }
+    
+    public boolean isUnderwaterAllowed() {
+        return this.getPropertyValue(ALLOW_UNDERWATER);
+    }
+    
+    public void setUnderwaterAllowed(boolean underwater) {
+        this.setPropertyValue(ALLOW_UNDERWATER, underwater);
+    }
+    
+    public boolean isExplode() {
+        return this.getPropertyValue(EXPLODE_ON_BREAK);
+    }
+    
+    public void setExplode(boolean explode) {
+        this.setPropertyValue(EXPLODE_ON_BREAK, explode);
+    }
+    
     @Since("1.4.0.0-PN")
     @PowerNukkitOnly
     @Override
@@ -169,5 +201,9 @@ public class BlockTNT extends BlockSolid implements RedstoneComponent {
         }
         return false;
     }
-
+    
+    @Override
+    public BlockColor getColor() {
+        return BlockColor.TNT_BLOCK_COLOR;
+    }
 }

@@ -2,12 +2,13 @@ package cn.nukkit.entity.mob;
 
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.Since;
+import cn.nukkit.entity.EntityBalloonable;
 import cn.nukkit.entity.EntityWalkable;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.nbt.tag.CompoundTag;
 
 @Since("1.4.0.0-PN")
-public class EntitySnowGolem extends EntityMob implements EntityWalkable {
+public class EntitySnowGolem extends EntityMob implements EntityWalkable, EntityBalloonable {
     @Since("1.4.0.0-PN")
     public static final int NETWORK_ID = 21;
 
@@ -42,5 +43,10 @@ public class EntitySnowGolem extends EntityMob implements EntityWalkable {
     protected void initEntity() {
         this.setMaxHealth(4);
         super.initEntity();
+    }
+
+    @Override
+    public float getBalloonMass() {
+        return 1.0F;
     }
 }

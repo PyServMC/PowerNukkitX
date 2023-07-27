@@ -8,7 +8,7 @@
 
     <groupId>cn.powernukkitx</groupId>
     <artifactId>powernukkitx</artifactId>
-    <version>1.20.10-r1</version>
+    <version>PNX-CUSTOM</version>
 
     <inceptionYear>2023</inceptionYear>
     <organization>
@@ -186,6 +186,16 @@
             <id>central</id>
             <name>Maven Central</name>
             <url>https://repo1.maven.org/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>maven-powernukkitx-cn</id>
+            <url>https://maven.powernukkitx.cn/repository/maven-public/</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -646,7 +656,7 @@
                             <rules>
                                 <DependencyConvergence/>
                                 <requireJavaVersion>
-                                    <version>1.8</version>
+                                    <version>17</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -696,7 +706,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.2.0</version>
@@ -774,7 +784,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
@@ -788,7 +798,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -833,7 +842,7 @@
                             </excludes>
                         </filter>
                         <filter>
-                            <artifact>cn.powernukkitx:Terra-Binary</artifact>
+                            <artifact>com.dfsek.terra:Terra</artifact>
                             <excludes>
                                 <exclude>config.yml</exclude>
                             </excludes>

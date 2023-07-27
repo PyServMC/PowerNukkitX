@@ -53,8 +53,8 @@ public class AddEntityPacket extends DataPacket {
             .put(EntityDrowned.NETWORK_ID, "minecraft:drowned")
             .put(EntitySalmon.NETWORK_ID, "minecraft:salmon")
             .put(EntityPufferfish.NETWORK_ID, "minecraft:pufferfish")
-            .put(107, "minecraft:balloon")
-            .put(106, "minecraft:ice_bomb")
+            .put(EntityBalloon.NETWORK_ID, "minecraft:balloon")
+            .put(EntityIceBomb.NETWORK_ID, "minecraft:ice_bomb")
             .put(EntityVex.NETWORK_ID, "minecraft:vex")
             .put(EntityEvoker.NETWORK_ID, "minecraft:evocation_illager")
             .put(103, "minecraft:evocation_fang")
@@ -70,7 +70,7 @@ public class AddEntityPacket extends DataPacket {
             .put(91, "minecraft:wither_skull_dangerous")
             .put(EntityBoat.NETWORK_ID, "minecraft:boat")
             .put(89, "minecraft:wither_skull")
-            .put(88, "minecraft:leash_knot")
+            .put(EntityLeashKnot.NETWORK_ID, "minecraft:leash_knot")
             .put(EntityEnderPearl.NETWORK_ID, "minecraft:ender_pearl")
             .put(EntityPotion.NETWORK_ID, "minecraft:splash_potion")
             .put(85, "minecraft:fireball")
@@ -94,12 +94,12 @@ public class AddEntityPacket extends DataPacket {
             .put(EntityPrimedTNT.NETWORK_ID, "minecraft:tnt")
             .put(EntityItem.NETWORK_ID, "minecraft:item")
             .put(63, "minecraft:player")
-            .put(62, "minecraft:tripod_camera")
+            .put(EntityTripodCamera.NETWORK_ID, "minecraft:tripod_camera")
             .put(EntityArmorStand.NETWORK_ID, "minecraft:armor_stand")//61
             .put(EntityRavager.NETWORK_ID, "minecraft:ravager")
             .put(EntityPhantom.NETWORK_ID, "minecraft:phantom")
             .put(EntityVindicator.NETWORK_ID, "minecraft:vindicator")//57
-            .put(56, "minecraft:agent")
+            .put(EntityAgent.NETWORK_ID, "minecraft:agent")
             .put(EntityEndermite.NETWORK_ID, "minecraft:endermite")
             .put(EntityShulker.NETWORK_ID, "minecraft:shulker")
             .put(EntityEnderDragon.NETWORK_ID, "minecraft:ender_dragon")
@@ -135,8 +135,8 @@ public class AddEntityPacket extends DataPacket {
             .put(EntityDonkey.NETWORK_ID, "minecraft:donkey")//24
             .put(EntityHorse.NETWORK_ID, "minecraft:horse")
             .put(EntityOcelot.NETWORK_ID, "minecraft:ocelot")
-            .put(21, "minecraft:snow_golem")
-            .put(20, "minecraft:iron_golem")
+            .put(EntitySnowGolem.NETWORK_ID, "minecraft:snow_golem")
+            .put(EntityIronGolem.NETWORK_ID, "minecraft:iron_golem")
             .put(EntityBat.NETWORK_ID, "minecraft:bat")
             .put(EntityRabbit.NETWORK_ID, "minecraft:rabbit")
             .put(EntitySquid.NETWORK_ID, "minecraft:squid")//17
@@ -146,8 +146,6 @@ public class AddEntityPacket extends DataPacket {
             .put(EntitySheep.NETWORK_ID, "minecraft:sheep")
             .put(EntityPig.NETWORK_ID, "minecraft:pig")
             .put(EntityCow.NETWORK_ID, "minecraft:cow")
-            .put(EntityChicken.NETWORK_ID, "minecraft:chicken")//10
-
             .build();
 
     @Override

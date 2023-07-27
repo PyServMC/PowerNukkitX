@@ -281,9 +281,11 @@ public class BlockComposter extends BlockSolidMeta implements ItemID {
     private static void registerDefaults() {
         registerItems(30, KELP, BEETROOT_SEEDS, DRIED_KELP, MELON_SEEDS, PUMPKIN_SEEDS, SWEET_BERRIES,
                 WHEAT_SEEDS, MOSS_CARPET, HANGING_ROOTS, SMALL_DRIPLEAF_BLOCK);
-        registerItems(30, MinecraftItemID.GLOW_BERRIES);
-        registerItems(50, MELON_SLICE, SUGAR_CANE, NETHER_SPROUTS, GLOW_LICHEN);
-        registerItems(65, APPLE, BEETROOT, CARROT, COCOA, POTATO, WHEAT);
+        registerItems(30, MinecraftItemID.GLOW_BERRIES, MinecraftItemID.HANGING_ROOTS, MinecraftItemID.MOSS_CARPET, MinecraftItemID.SMALL_DRIPLEAF_BLOCK);
+        registerItems(50, MELON_SLICE, SUGAR_CANE, NETHER_SPROUTS);
+        registerItems(65, APPLE, BEETROOT, CARROT, COCOA, POTATO, WHEAT, NETHER_WART);
+        registerItems(65, MinecraftItemID.WARPED_FUNGUS);
+        registerItems(65, MinecraftItemID.CRIMSON_FUNGUS);
         registerItems(85, BAKED_POTATOES, BREAD, COOKIE);
         registerItems(100, CAKE, PUMPKIN_PIE);
 

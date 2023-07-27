@@ -13,6 +13,7 @@ import cn.nukkit.event.entity.*;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemTurtleShell;
+import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.level.GameRule;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
@@ -68,6 +69,9 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
         if (!this.namedTag.contains("Health") || !(this.namedTag.get("Health") instanceof FloatTag)) {
             this.namedTag.putFloat("Health", this.getMaxHealth());
         }
+        if (this.namedTag.containsShort("Freeze")) {
+            this.freezingTicks = this.namedTag.getShort("Freeze");
+        }
 
         this.health = this.namedTag.getFloat("Health");
     }
@@ -88,6 +92,7 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
     public void saveNBT() {
         super.saveNBT();
         this.namedTag.putFloat("Health", this.getHealth());
+        this.namedTag.putShort("Freeze", freezingTicks);
     }
 
     public boolean hasLineOfSight(Entity entity) {
@@ -183,6 +188,7 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
         if (motion.y > base) {
             motion.y = base;
         }
+        motion.y = Math.min(motion.y, 0.9f);
 
         this.setMotion(motion);
     }
@@ -217,7 +223,7 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
         boolean isBreathing = !this.isInsideOfWater();
 
         if (this instanceof Player) {
-            if (isBreathing && ((Player) this).getInventory().getHelmet() instanceof ItemTurtleShell) {
+            if (isBreathing && ((Player) this).getInventory() != null && ((Player) this).getInventory().getHelmet() instanceof ItemTurtleShell) {
                 turtleTicks = 200;
             } else if (turtleTicks > 0) {
                 isBreathing = true;
@@ -304,7 +310,19 @@ public abstract class EntityLiving extends Entity implements EntityDamageable {
         var block = this.level.getTickCachedBlock(getFloorX(), (int) (Math.round(this.y) - 1), getFloorZ());
         if (block instanceof BlockMagma || block instanceof BlockCactus) block.onEntityCollide(this);
 
+        if(this.level.getGameRules().getBoolean(GameRule.FREEZE_DAMAGE) && freezingTicks == 140) {
+            if(noDamageTicks <= 0) {
+                this.attack(new EntityDamageEvent(this, DamageCause.FREEZING, 1));
+                this.noDamageTicks = 40;
+            }
+        }
+
         return hasUpdate;
+    }
+
+    @Override
+    public Item toItem() {
+        return Item.get(Item.SPAWN_EGG, this.getNetworkId());
     }
 
     public Item[] getDrops() {

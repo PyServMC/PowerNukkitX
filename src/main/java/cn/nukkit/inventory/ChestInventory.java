@@ -11,6 +11,8 @@ import cn.nukkit.network.protocol.BlockEventPacket;
 import cn.nukkit.utils.LevelException;
 import cn.nukkit.utils.RedstoneComponent;
 
+import java.util.Iterator;
+
 /**
  * @author MagicDroidX (Nukkit Project)
  */
@@ -32,7 +34,9 @@ public class ChestInventory extends ContainerInventory {
     public void onOpen(Player who) {
         super.onOpen(who);
 
-        if (this.getViewers().size() == 1) {
+        Iterator<Player> viewerIterator = this.getViewers().iterator();
+        Player next = null;
+        if (!who.isSpectator() && (this.getViewers().size() == 1 || (this.getViewers().size() == 2 && (next = viewerIterator.next()).equals(who) ? viewerIterator.next().isSpectator() : (next != null && next.isSpectator())))) {
             BlockEventPacket pk = new BlockEventPacket();
             pk.x = (int) this.getHolder().getX();
             pk.y = (int) this.getHolder().getY();
@@ -60,7 +64,9 @@ public class ChestInventory extends ContainerInventory {
     @PowerNukkitDifference(info = "Using new method to play sounds", since = "1.4.0.0-PN")
     @Override
     public void onClose(Player who) {
-        if (this.getViewers().size() == 1) {
+        Iterator<Player> viewIterator = this.getViewers().iterator();
+        Player next = null;
+        if (!who.isSpectator() && (this.getViewers().size() == 1 || (this.getViewers().size() == 2 && (next = viewIterator.next()).equals(who) ? viewIterator.next().isSpectator() : (next != null && next.isSpectator())))) {
             BlockEventPacket pk = new BlockEventPacket();
             pk.x = (int) this.getHolder().getX();
             pk.y = (int) this.getHolder().getY();

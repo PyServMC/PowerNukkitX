@@ -1,6 +1,7 @@
 package cn.nukkit.event.player;
 
 import cn.nukkit.Player;
+
 import cn.nukkit.api.Since;
 import cn.nukkit.entity.item.EntityFishingHook;
 import cn.nukkit.event.Cancellable;

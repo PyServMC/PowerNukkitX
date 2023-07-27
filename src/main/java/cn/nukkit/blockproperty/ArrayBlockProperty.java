@@ -213,7 +213,7 @@ public final class ArrayBlockProperty<E extends Serializable> extends BlockPrope
     @PowerNukkitOnly
     @Override
     protected void validateMetaDirectly(int meta) {
-        Preconditions.checkElementIndex(meta, universe.length);
+        //Preconditions.checkElementIndex(meta, universe.length);
     }
 
     @PowerNukkitOnly

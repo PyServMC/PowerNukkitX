@@ -135,6 +135,7 @@ public class CraftingManager {
     //</editor-fold>
 
     //<editor-fold desc="constructors and setup" defaultstate="collapsed">
+    @SuppressWarnings("rawtypes")
     public CraftingManager() {
         log.info("Loading recipes...");
         this.vanillaRecipeParser = new VanillaRecipeParser();
@@ -358,28 +359,36 @@ public class CraftingManager {
                 pk.addCartographyRecipe(recipe);
             }
         }
-        for (FurnaceRecipe recipe : getFurnaceRecipesMap().values()) {
+
+        for (FurnaceRecipe recipe : this.furnaceRecipes.values()) {
             pk.addFurnaceRecipe(recipe);
         }
-        for (MultiRecipe recipe : getMultiRecipeMap().values()) {
+
+        for (MultiRecipe recipe : this.multiRecipes.values()) {
             pk.addMultiRecipe(recipe);
         }
-        for (SmokerRecipe recipe : getSmokerRecipeMap().values()) {
+
+        for (SmokerRecipe recipe : this.smokerRecipes.values()) {
             pk.addSmokerRecipe(recipe);
         }
-        for (BlastFurnaceRecipe recipe : getBlastFurnaceRecipeMap().values()) {
+
+        for (BlastFurnaceRecipe recipe : this.blastFurnaceRecipes.values()) {
             pk.addBlastFurnaceRecipe(recipe);
         }
-        for (CampfireRecipe recipe : getCampfireRecipeMap().values()) {
+
+        for (CampfireRecipe recipe : this.campfireRecipes.values()) {
             pk.addCampfireRecipeRecipe(recipe);
         }
-        for (BrewingRecipe recipe : getBrewingRecipeMap().values()) {
+
+        for (BrewingRecipe recipe : this.brewingRecipes.values()) {
             pk.addBrewingRecipe(recipe);
         }
-        for (ContainerRecipe recipe : getContainerRecipeMap().values()) {
+
+        for (ContainerRecipe recipe : this.containerRecipes.values()) {
             pk.addContainerRecipe(recipe);
         }
-        for (StonecutterRecipe recipe : getStonecutterRecipeMap().values()) {
+
+        for (StonecutterRecipe recipe : this.stonecutterRecipes.values()) {
             pk.addStonecutterRecipe(recipe);
         }
         pk.tryEncode();
@@ -391,8 +400,8 @@ public class CraftingManager {
         if (input.isNull()) {
             return null;
         }
-        FurnaceRecipe recipe = getFurnaceRecipesMap().get(getItemHash(input));
-        if (recipe == null) recipe = getFurnaceRecipesMap().get(getItemHash(input, 0));
+        FurnaceRecipe recipe = this.furnaceRecipes.get(getItemHash(input));
+        if (recipe == null) recipe = this.furnaceRecipes.get(getItemHash(input, 0));
         return recipe;
     }
 
@@ -401,8 +410,8 @@ public class CraftingManager {
         if (input.isNull()) {
             return null;
         }
-        CampfireRecipe recipe = getCampfireRecipeMap().get(getItemHash(input));
-        if (recipe == null) recipe = getCampfireRecipeMap().get(getItemHash(input, 0));
+        CampfireRecipe recipe = this.campfireRecipes.get(getItemHash(input));
+        if (recipe == null) recipe = this.campfireRecipes.get(getItemHash(input, 0));
         return recipe;
     }
 
@@ -411,8 +420,8 @@ public class CraftingManager {
         if (input.isNull()) {
             return null;
         }
-        BlastFurnaceRecipe recipe = getBlastFurnaceRecipeMap().get(getItemHash(input));
-        if (recipe == null) recipe = getBlastFurnaceRecipeMap().get(getItemHash(input, 0));
+        BlastFurnaceRecipe recipe = this.blastFurnaceRecipes.get(getItemHash(input));
+        if (recipe == null) recipe = this.blastFurnaceRecipes.get(getItemHash(input, 0));
         return recipe;
     }
 
@@ -421,8 +430,8 @@ public class CraftingManager {
         if (input.isNull()) {
             return null;
         }
-        SmokerRecipe recipe = getSmokerRecipeMap().get(getItemHash(input));
-        if (recipe == null) recipe = getSmokerRecipeMap().get(getItemHash(input, 0));
+        SmokerRecipe recipe = this.smokerRecipes.get(getItemHash(input));
+        if (recipe == null) recipe = this.smokerRecipes.get(getItemHash(input, 0));
         return recipe;
     }
 
@@ -473,28 +482,28 @@ public class CraftingManager {
     public void registerFurnaceRecipe(FurnaceRecipe recipe) {
         this.addRecipe(recipe);
         Item input = recipe.getInput();
-        getFurnaceRecipesMap().put(getItemHash(input), recipe);
+        this.furnaceRecipes.put(getItemHash(input), recipe);
     }
 
     @PowerNukkitOnly
     public void registerBlastFurnaceRecipe(BlastFurnaceRecipe recipe) {
         this.addRecipe(recipe);
         Item input = recipe.getInput();
-        getBlastFurnaceRecipeMap().put(getItemHash(input), recipe);
+        this.blastFurnaceRecipes.put(getItemHash(input), recipe);
     }
 
     @PowerNukkitOnly
     public void registerSmokerRecipe(SmokerRecipe recipe) {
         this.addRecipe(recipe);
         Item input = recipe.getInput();
-        getSmokerRecipeMap().put(getItemHash(input), recipe);
+        this.smokerRecipes.put(getItemHash(input), recipe);
     }
 
     @PowerNukkitOnly
     public void registerCampfireRecipe(CampfireRecipe recipe) {
         this.addRecipe(recipe);
         Item input = recipe.getInput();
-        getCampfireRecipeMap().put(getItemHash(input), recipe);
+        this.campfireRecipes.put(getItemHash(input), recipe);
     }
 
     @Since("1.19.50-r3")
@@ -585,12 +594,14 @@ public class CraftingManager {
     @Since("1.4.0.0-PN")
     public SmithingRecipe matchSmithingRecipe(@NotNull List<Item> inputList, @NotNull Item primaryOutput) {
         int outputHash = getItemHash(primaryOutput);
-        if (!getSmithingRecipeMap().containsKey(outputHash)) {
+        if (!this.getSmithingRecipeMap().containsKey(outputHash)) {
             return null;
         }
         inputList.sort(recipeComparator);
         UUID inputHash = getMultiItemHash(inputList);
-        Map<UUID, SmithingRecipe> recipeMap = getSmithingRecipeMap().get(outputHash);
+
+        Map<UUID, SmithingRecipe> recipeMap = this.getSmithingRecipeMap().get(outputHash);
+
         if (recipeMap != null) {
             SmithingRecipe recipe = recipeMap.get(inputHash);
             if (recipe != null && (recipe.matchItems(inputList) || matchItemsAccumulation(recipe, inputList, primaryOutput))) {
@@ -606,16 +617,16 @@ public class CraftingManager {
     }
 
     public BrewingRecipe matchBrewingRecipe(Item input, Item potion) {
-        return getBrewingRecipeMap().get(getPotionHash(input, potion));
+        return this.brewingRecipes.get(getPotionHash(input, potion));
     }
 
     public ContainerRecipe matchContainerRecipe(Item input, Item potion) {
-        return getContainerRecipeMap().get(getContainerHash(input, potion));
+        return this.containerRecipes.get(getContainerHash(input, potion));
     }
 
     @PowerNukkitOnly
     public StonecutterRecipe matchStonecutterRecipe(Item output) {
-        return getStonecutterRecipeMap().get(getItemHash(output));
+        return this.stonecutterRecipes.get(getItemHash(output));
     }
 
     @PowerNukkitOnly
@@ -639,6 +650,77 @@ public class CraftingManager {
             }
         }
         return null;
+    }
+
+    public CraftingRecipe matchRecipe(List<Item> inputList, Item primaryOutput, List<Item> extraOutputList) {
+        //TODO: try to match special recipes before anything else (first they need to be implemented!)
+
+        int outputHash = getItemHash(primaryOutput);
+        if (this.shapedRecipes.containsKey(outputHash)) {
+            inputList.sort(recipeComparator);
+
+            UUID inputHash = getMultiItemHash(inputList);
+
+            Map<UUID, ShapedRecipe> recipeMap = this.shapedRecipes.get(outputHash);
+
+            if (recipeMap != null) {
+                ShapedRecipe recipe = recipeMap.get(inputHash);
+
+                if (recipe != null && (recipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(recipe, inputList, primaryOutput, extraOutputList))) {
+                    return recipe;
+                }
+
+                for (ShapedRecipe shapedRecipe : recipeMap.values()) {
+                    if (shapedRecipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(shapedRecipe, inputList, primaryOutput, extraOutputList)) {
+                        return shapedRecipe;
+                    }
+                }
+            }
+        }
+
+        if (this.shapelessRecipes.containsKey(outputHash)) {
+            inputList.sort(recipeComparator);
+
+            UUID inputHash = getMultiItemHash(inputList);
+
+            Map<UUID, ShapelessRecipe> recipes = this.shapelessRecipes.get(outputHash);
+
+            if (recipes == null) {
+                return null;
+            }
+
+            ShapelessRecipe recipe = recipes.get(inputHash);
+
+            if (recipe != null && (recipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(recipe, inputList, primaryOutput, extraOutputList))) {
+                return recipe;
+            }
+
+            for (ShapelessRecipe shapelessRecipe : recipes.values()) {
+                if (shapelessRecipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(shapelessRecipe, inputList, primaryOutput, extraOutputList)) {
+                    return shapelessRecipe;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private boolean matchItemsAccumulation(SmithingRecipe recipe, List<Item> inputList, Item primaryOutput) {
+        Item recipeResult = recipe.getResult();
+        if (primaryOutput.equals(recipeResult, recipeResult.hasMeta(), recipeResult.hasCompoundTag()) && primaryOutput.getCount() % recipeResult.getCount() == 0) {
+            int multiplier = primaryOutput.getCount() / recipeResult.getCount();
+            return recipe.matchItems(inputList, multiplier);
+        }
+        return false;
+    }
+
+    private boolean matchItemsAccumulation(CraftingRecipe recipe, List<Item> inputList, Item primaryOutput, List<Item> extraOutputList) {
+        Item recipeResult = recipe.getResult();
+        if (primaryOutput.equals(recipeResult, recipeResult.hasMeta(), recipeResult.hasCompoundTag()) && primaryOutput.getCount() % recipeResult.getCount() == 0) {
+            int multiplier = primaryOutput.getCount() / recipeResult.getCount();
+            return recipe.matchItems(inputList, extraOutputList, multiplier);
+        }
+        return false;
     }
 
     @Since("1.19.50-r3")
@@ -670,63 +752,6 @@ public class CraftingManager {
     @Since("1.19.50-r3")
     public static void setCraftingPacket(DataPacket craftingPacket) {
         CraftingManager.packet = craftingPacket;
-    }
-
-    public CraftingRecipe matchRecipe(List<Item> inputList, Item primaryOutput, List<Item> extraOutputList) {
-        //TODO: try to match special recipes before anything else (first they need to be implemented!)
-        int outputHash = getItemHash(primaryOutput);
-        if (getShapedRecipeMap().containsKey(outputHash)) {
-            inputList.sort(recipeComparator);
-            UUID inputHash = getMultiItemHash(inputList);
-            Map<UUID, ShapedRecipe> recipeMap = getShapedRecipeMap().get(outputHash);
-            if (recipeMap != null) {
-                ShapedRecipe recipe = recipeMap.get(inputHash);
-                if (recipe != null && (recipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(recipe, inputList, primaryOutput, extraOutputList))) {
-                    return recipe;
-                }
-                for (ShapedRecipe shapedRecipe : recipeMap.values()) {
-                    if (shapedRecipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(shapedRecipe, inputList, primaryOutput, extraOutputList)) {
-                        return shapedRecipe;
-                    }
-                }
-            }
-        }
-        if (getShapelessRecipeMap().containsKey(outputHash)) {
-            inputList.sort(recipeComparator);
-            UUID inputHash = getMultiItemHash(inputList);
-            Map<UUID, ShapelessRecipe> recipes = getShapelessRecipeMap().get(outputHash);
-            if (recipes == null) {
-                return null;
-            }
-            ShapelessRecipe recipe = recipes.get(inputHash);
-            if (recipe != null && (recipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(recipe, inputList, primaryOutput, extraOutputList))) {
-                return recipe;
-            }
-            for (ShapelessRecipe shapelessRecipe : recipes.values()) {
-                if (shapelessRecipe.matchItems(inputList, extraOutputList) || matchItemsAccumulation(shapelessRecipe, inputList, primaryOutput, extraOutputList)) {
-                    return shapelessRecipe;
-                }
-            }
-        }
-        return null;
-    }
-
-    private boolean matchItemsAccumulation(SmithingRecipe recipe, List<Item> inputList, Item primaryOutput) {
-        Item recipeResult = recipe.getResult();
-        if (primaryOutput.equals(recipeResult, recipeResult.hasMeta(), recipeResult.hasCompoundTag()) && primaryOutput.getCount() % recipeResult.getCount() == 0) {
-            int multiplier = primaryOutput.getCount() / recipeResult.getCount();
-            return recipe.matchItems(inputList, multiplier);
-        }
-        return false;
-    }
-
-    private boolean matchItemsAccumulation(CraftingRecipe recipe, List<Item> inputList, Item primaryOutput, List<Item> extraOutputList) {
-        Item recipeResult = recipe.getResult();
-        if (primaryOutput.equals(recipeResult, recipeResult.hasMeta(), recipeResult.hasCompoundTag()) && primaryOutput.getCount() % recipeResult.getCount() == 0) {
-            int multiplier = primaryOutput.getCount() / recipeResult.getCount();
-            return recipe.matchItems(inputList, extraOutputList, multiplier);
-        }
-        return false;
     }
 
     private void addRecipe(Recipe recipe) {

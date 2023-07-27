@@ -243,6 +243,59 @@ public class BlockStateRegistry {
         return runtimeIdRegistration.get(runtimeId);
     }
 
+    @PowerNukkitOnly
+    @Since("1.5.2.0-PN")
+    @Nullable
+    public String getKnownBlockStateIdByRuntimeId(int runtimeId) {
+        if (runtimeId >= 0 && runtimeId < knownStateIds.size()) {
+            return knownStateIds.get(runtimeId);
+        }
+        return null;
+    }
+
+    @PowerNukkitOnly
+    @Since("1.5.2.0-PN")
+    public int getKnownRuntimeIdByBlockStateId(String stateId) {
+        int result = knownStateIds.indexOf(stateId);
+        if (result != -1) {
+            return result;
+        }
+        BlockState state;
+        try {
+            state = BlockState.of(stateId);
+        } catch (NoSuchElementException | IllegalStateException | IllegalArgumentException ignored) {
+            return -1;
+        }
+        String fullStateId = state.getStateId();
+        return knownStateIds.indexOf(fullStateId);
+    }
+
+    /**
+     * @return {@code null} if the runtime id does not matches any known block state.
+     */
+    @PowerNukkitOnly
+    @Since("1.4.0.0-PN")
+    @Nullable
+    public static BlockState getBlockStateByRuntimeId(int runtimeId) {
+        Registration registration = findRegistrationByRuntimeId(runtimeId);
+        if (registration == null) {
+            return null;
+        }
+        BlockState state = registration.state;
+        if (state != null) {
+            return state;
+        }
+        CompoundTag originalBlock = registration.originalBlock;
+        if (originalBlock != null) {
+            state = buildStateFromCompound(originalBlock);
+            if (state != null) {
+                registration.state = state;
+                registration.originalBlock = null;
+            }
+        }
+        return state;
+    }
+
     @Nullable
     private BlockState buildStateFromCompound(CompoundTag block) {
         String name = block.getString("name").toLowerCase(Locale.ENGLISH);

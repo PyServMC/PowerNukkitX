@@ -13,6 +13,7 @@ import cn.nukkit.blockstate.BlockState;
 import cn.nukkit.blockstate.BlockStateRegistry;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemID;
+import cn.nukkit.item.MinecraftItemID;
 import cn.nukkit.nbt.stream.FastByteArrayOutputStream;
 import cn.nukkit.nbt.stream.NBTInputStream;
 import cn.nukkit.nbt.stream.NBTOutputStream;
@@ -77,10 +78,17 @@ public class NBTIO {
 
         int damage = !tag.containsShort("Damage") ? 0 : tag.getShort("Damage");
         int amount = tag.getByte("Count");
-        Item item;
+        Item item = null;
         if (tag.containsShort("id")) {
             int id = (short) tag.getShort("id");
             item = fixWoolItem(id, damage, amount);
+            if(id == 930) item = MinecraftItemID.RAW_COPPER.get(amount);
+            if(id == 931) item = MinecraftItemID.COPPER_INGOT.get(amount);
+            if(id == 932) item = MinecraftItemID.SPYGLASS.get(amount);
+            if(id == 933) item = MinecraftItemID.RAW_IRON.get(amount);
+            if(id == 934) item = MinecraftItemID.RAW_GOLD.get(amount);
+            if(id == 935) item = MinecraftItemID.AMETHYST_SHARD.get(amount);
+            if(id == 936) item = MinecraftItemID.GLOW_INK_SAC.get(amount);
             if (item == null) {
                 try {
                     item = Item.get(id, damage, amount);

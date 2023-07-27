@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * @author MagicDroidX (Nukkit Project)
  */
-@PowerNukkitDifference(since = "FUTURE", info = "Implements equals() and hashcode() only in PowerNukkit")
+@PowerNukkitDifference(since = "1.6.0.0-PN", info = "Implements equals() and hashcode() only in PowerNukkit")
 @EqualsAndHashCode
 public class Potion implements Cloneable {
     private static final Map<Identifier, Potion> potionsMap = new LinkedHashMap<>();
@@ -75,8 +75,10 @@ public class Potion implements Cloneable {
     public static final int SLOWNESS_IV = 42;
     @Since("1.4.0.0-PN")
     @Deprecated
-    @DeprecationDetails(since = "FUTURE", by = "PowerNukkit", reason =
-            "Incorrect name, there is vanilla potion with slowness long 2, the result of potion with slowness 1 + glowstone is slowness 4", replaceWith = "SLOWNESS_IV")
+
+    @DeprecationDetails(since = "1.6.0.0-PN", by = "PowerNukkit", reason =
+            "Incorrect name, there is vanilla potion with slowness long 2, the result of potion with slowness 1 + glowstone is slowness 4",
+            replaceWith = "SLOWNESS_IV")
     public static final int SLOWNESS_LONG_II = SLOWNESS_IV;
 
     protected static Potion[] potions;
@@ -337,6 +339,7 @@ public class Potion implements Cloneable {
                 case SPEED_II -> 90;
                 default -> 0;
             };
+
         }
     }
 

@@ -1,5 +1,7 @@
 package cn.nukkit.block;
 
+import cn.nukkit.item.Item;
+
 import cn.nukkit.api.PowerNukkitOnly;
 
 @PowerNukkitOnly
@@ -16,11 +18,16 @@ public class BlockPistonHeadSticky extends BlockPistonHead {
     
     @Override
     public int getId() {
-        return PISTON_HEAD_STICKY;
+        return STICKY_PISTON_ARM_COLLISION;
     }
     
     @Override
     public String getName() {
         return "Sticky Piston Head";
+    }
+
+    @Override
+    public Item[] getDrops(Item item) {
+        return new Item[] {Item.get(BlockID.STICKY_PISTON)};
     }
 }

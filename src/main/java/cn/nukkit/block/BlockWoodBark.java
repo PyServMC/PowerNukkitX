@@ -5,6 +5,8 @@ import cn.nukkit.api.Since;
 import cn.nukkit.blockproperty.BlockProperties;
 import cn.nukkit.blockproperty.BooleanBlockProperty;
 import cn.nukkit.blockproperty.value.WoodType;
+import cn.nukkit.item.ItemBlock;
+
 import org.jetbrains.annotations.NotNull;
 
 import static cn.nukkit.blockproperty.CommonBlockProperties.PILLAR_AXIS;
@@ -34,7 +36,12 @@ public class BlockWoodBark extends BlockWood {
     public BlockWoodBark(int meta) {
         super(meta);
     }
-    
+
+    @Override
+    public ItemBlock asItemBlock(int count) {
+        return new ItemBlock(new BlockWoodBark(), getDamage() & 0xF, count);
+    }
+
     @Override
     public int getId() {
         return WOOD_BARK;

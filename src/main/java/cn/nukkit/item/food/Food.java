@@ -181,6 +181,19 @@ public abstract class Food {
         return result[0];
     }
 
+    public static Food getByRelative(String relativeID) {
+        final Food[] result = {null};
+        registryCustom.forEach((n, f) -> {
+            if (n.stringId != null && n.stringId.equals(relativeID) && n.plugin.isEnabled()) result[0] = f;
+        });
+        if (result[0] == null) {
+            registryDefault.forEach((n, f) -> {
+                if (n.stringId != null && n.stringId.equals(relativeID)) result[0] = f;
+            });
+        }
+        return result[0];
+    }
+
     protected int restoreFood = 0;
     protected float restoreSaturation = 0;
     protected final List<NodeIDMeta> relativeIDs = new ArrayList<>();
@@ -274,10 +287,18 @@ public abstract class Food {
     static class NodeIDMeta {
         final int id;
         final int meta;
+        final String stringId;
 
         NodeIDMeta(int id, int meta) {
             this.id = id;
             this.meta = meta;
+            this.stringId = null;
+        }
+
+        NodeIDMeta(String id) {
+            this.id = 255;
+            this.meta = 0;
+            this.stringId = id;
         }
     }
 
@@ -286,6 +307,11 @@ public abstract class Food {
 
         NodeIDMetaPlugin(int id, int meta, Plugin plugin) {
             super(id, meta);
+            this.plugin = plugin;
+        }
+
+        NodeIDMetaPlugin(String id, Plugin plugin) {
+            super(id);
             this.plugin = plugin;
         }
     }

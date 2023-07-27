@@ -78,7 +78,7 @@ public class AnvilDamageEvent extends BlockEvent implements Cancellable {
     }
 
     @Deprecated
-    @DeprecationDetails(since = "FUTURE", by = "PowerNukkit", reason = "Unstable use of raw block state data", replaceWith = "getOldAnvilDamage or getOldBlockState")
+    @DeprecationDetails(since = "1.6.0.0-PN", by = "PowerNukkit", reason = "Unstable use of raw block state data", replaceWith = "getOldAnvilDamage or getOldBlockState")
     @Since("1.4.0.0-PN")
     public int getOldDamage() {
         if (!block.getProperties().contains(BlockAnvil.DAMAGE)) {
@@ -88,7 +88,7 @@ public class AnvilDamageEvent extends BlockEvent implements Cancellable {
     }
 
     @PowerNukkitOnly
-    @Since("FUTURE")
+    @Since("1.6.0.0-PN")
     @Nullable
     public AnvilDamage getOldAnvilDamage() {
         if (oldState.getProperties().contains(BlockAnvil.DAMAGE)) {
@@ -119,7 +119,7 @@ public class AnvilDamageEvent extends BlockEvent implements Cancellable {
     }
 
     @Deprecated
-    @DeprecationDetails(since = "FUTURE", by = "PowerNukkit", reason = "Unstable use of raw block state data", replaceWith = "getNewAnvilDamage or getNewBlockState")
+    @DeprecationDetails(since = "1.6.0.0-PN", by = "PowerNukkit", reason = "Unstable use of raw block state data", replaceWith = "getNewAnvilDamage or getNewBlockState")
     @Since("1.4.0.0-PN")
     public int getNewDamage() {
         BlockState newBlockState = getNewBlockState();
@@ -133,7 +133,7 @@ public class AnvilDamageEvent extends BlockEvent implements Cancellable {
     }
 
     @Deprecated
-    @DeprecationDetails(since = "FUTURE", by = "PowerNukkit", reason = "Unstable use of raw block state data",
+    @DeprecationDetails(since = "1.6.0.0-PN", by = "PowerNukkit", reason = "Unstable use of raw block state data",
             replaceWith = "setNewBlockState example: setNewBlockState(BlockState.of(BlockID.ANVIL).withProperty(BlockAnvil.DAMAGE, AnvilDamage.VERY_DAMAGED))")
     @Since("1.4.0.0-PN")
     public void setNewDamage(int newDamage) {

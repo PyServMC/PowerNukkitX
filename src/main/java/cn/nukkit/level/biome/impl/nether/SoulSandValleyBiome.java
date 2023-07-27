@@ -14,7 +14,10 @@ public class SoulSandValleyBiome extends NetherBiome {
         this.addPopulator(new PopulatorOre(BlockID.SOUL_SAND, new OreType[]{
                 new OreType(Block.get(SOUL_SOIL), 3, 128, 0, 128, SOUL_SAND)
         }));
-        this.addPopulator(new PopulatorGroundSoulFire());
+        PopulatorGroundSoulFire groundFire = new PopulatorGroundSoulFire();
+        groundFire.setBaseAmount(1);
+        groundFire.setRandomAmount(1);
+        this.addPopulator(groundFire);
     }
 
     @Override

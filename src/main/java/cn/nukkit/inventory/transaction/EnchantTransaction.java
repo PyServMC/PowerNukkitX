@@ -78,6 +78,7 @@ public class EnchantTransaction extends InventoryTransaction {
         if (!source.isCreative()) {
             source.setExperience(source.getExperience(), source.getExperienceLevel() - ev.getXpCost());
         }
+
         return true;
     }
 

@@ -118,6 +118,9 @@ public class BlockEntityBeacon extends BlockEntitySpawnable {
                     //Apply the primary power
                     e = Effect.getEffect(getPrimaryPower());
 
+                    //Set invisible
+                    e.setVisible(false);
+                    
                     //Set duration
                     e.setDuration(duration * 20);
 
@@ -134,6 +137,9 @@ public class BlockEntityBeacon extends BlockEntitySpawnable {
                 if (getPowerLevel() == POWER_LEVEL_MAX && getSecondaryPower() == Effect.REGENERATION) {
                     //Get the regen effect
                     e = Effect.getEffect(Effect.REGENERATION);
+
+                    //Set invisible
+                    e.setVisible(false);
 
                     //Set duration
                     e.setDuration(duration * 20);

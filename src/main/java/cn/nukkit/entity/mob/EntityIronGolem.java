@@ -21,6 +21,7 @@ package cn.nukkit.entity.mob;
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.Since;
 import cn.nukkit.block.BlockID;
+import cn.nukkit.entity.EntityBalloonable;
 import cn.nukkit.entity.EntityWalkable;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemID;
@@ -35,7 +36,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 @PowerNukkitOnly
 @Since("1.4.0.0-PN")
-public class EntityIronGolem extends EntityMob implements EntityWalkable {
+public class EntityIronGolem extends EntityMob implements EntityWalkable, EntityBalloonable {
     @PowerNukkitOnly
     @Since("1.4.0.0-PN")
     public static final int NETWORK_ID = 20;
@@ -90,5 +91,10 @@ public class EntityIronGolem extends EntityMob implements EntityWalkable {
         drops[0] = Item.get(ItemID.IRON_INGOT, 0, random.nextInt(3, 6));
 
         return drops;
+    }
+
+    @Override
+    public float getBalloonMass() {
+        return 2.0F;
     }
 }

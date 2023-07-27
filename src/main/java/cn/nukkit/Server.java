@@ -216,6 +216,10 @@ public class Server {
      */
     public boolean checkLoginTime = true;
 
+    private boolean educationEditionEnabled = false;
+
+    private boolean forceCustomItems = false;
+
     private RCON rcon;
 
     private EntityMetadataStore entityMetadata;
@@ -659,6 +663,7 @@ public class Server {
                 put("force-resources-allow-client-packs", false);
                 put("xbox-auth", true);
                 put("check-login-time", true);
+                put("check-xuid", true);
                 put("disable-auto-bug-report", false);
                 put("allow-shaded", false);
                 put("server-authoritative-movement", "server-auth");// Allowed values: "client-auth", "server-auth", "server-auth-with-rewind"
@@ -687,10 +692,12 @@ public class Server {
 
         var isShaded = StartArgUtils.isShaded();
         // 检测启动参数
+        /*
         if (!StartArgUtils.isValidStart() || (JarStart.isUsingJavaJar() && !isShaded)) {
             log.fatal(getLanguage().tr("nukkit.start.invalid"));
             return;
         }
+        */
 
         // 检测非法使用shaded包启动
         if (!this.properties.getBoolean("allow-shaded", false) && isShaded) {
@@ -700,7 +707,7 @@ public class Server {
             return;
         }
 
-        log.info(this.getLanguage().tr("language.selected", new String[]{getLanguage().getName(), getLanguage().getLang()}));
+        log.info(this.getLanguage().tr("language.selected", getLanguage().getName(), getLanguage().getLang()));
         log.info(getLanguage().tr("nukkit.server.start", TextFormat.AQUA + this.getVersion() + TextFormat.RESET));
 
         Object poolSize = this.getConfig("settings.async-workers", (Object) "auto");
@@ -729,6 +736,7 @@ public class Server {
         this.safeSpawn = this.getConfig().getBoolean("settings.safe-spawn", true);
         this.forceSkinTrusted = this.getConfig().getBoolean("player.force-skin-trusted", false);
         this.checkMovement = this.getConfig().getBoolean("player.check-movement", true);
+        this.educationEditionEnabled = this.getConfig("level-settings.education-edition", false);
         this.serverAuthoritativeMovementMode = switch (this.properties.get("server-authoritative-movement", "client-auth")) {
             case "client-auth" -> 0;
             case "server-auth" -> 1;
@@ -780,7 +788,7 @@ public class Server {
             ExceptionHandler.registerExceptionHandler();
         }
 
-        log.info(this.getLanguage().tr("nukkit.server.networkStart", new String[]{this.getIp().equals("") ? "*" : this.getIp(), String.valueOf(this.getPort())}));
+        log.info(this.getLanguage().tr("nukkit.server.networkStart", this.getIp().equals("") ? "*" : this.getIp(), String.valueOf(this.getPort())));
         this.serverID = UUID.randomUUID();
 
         this.network = new Network(this);
@@ -792,8 +800,8 @@ public class Server {
 
         this.consoleSender = new ConsoleCommandSender();
 
-        // Initialize metrics
-        NukkitMetrics.startNow(this);
+        // Initialize metrics | disabled for privacy concerns and data manipulation
+        // NukkitMetrics.startNow(this);
 
         this.registerEntities();
         this.registerProfessions();
@@ -871,13 +879,14 @@ public class Server {
 
         LevelProviderManager.addProvider(this, Anvil.class);
 
-        Generator.addGenerator(Flat.class, "flat", Generator.TYPE_FLAT);
+        Generator.addGenerator(Empty.class, "empty", Generator.TYPE_EMPTY);
         Generator.addGenerator(Normal.class, "normal", Generator.TYPE_INFINITE);
         if (useTerra) {
             Generator.addGenerator(TerraGeneratorWrapper.class, "terra");
             PNXPlatform.getInstance();
         }
         Generator.addGenerator(Normal.class, "default", Generator.TYPE_INFINITE);
+        Generator.addGenerator(Flat.class, "flat", Generator.TYPE_FLAT);
         Generator.addGenerator(Nether.class, "nether", Generator.TYPE_NETHER);
         Generator.addGenerator(TheEnd.class, "the_end", Generator.TYPE_THE_END);
         //todo: add old generator and hell generator
@@ -1101,7 +1110,7 @@ public class Server {
             if (this.watchdog != null) {
                 this.watchdog.running = false;
             }
-            NukkitMetrics.closeNow(this);
+            // NukkitMetrics.closeNow(this);
             //close computeThreadPool
             this.computeThreadPool.shutdownNow();
             //todo other things
@@ -1188,6 +1197,10 @@ public class Server {
         }
     }
 
+    public boolean getCheckXUID() {
+        return this.getPropertyBoolean("check-xuid", true);
+    }
+
     private void checkTickUpdates(int currentTick, long tickTime) {
         if (this.alwaysTickPlayers) {
             for (Player p : new ArrayList<>(this.players.values())) {
@@ -1239,9 +1252,9 @@ public class Server {
     public void doAutoSave() {
         if (this.getAutoSave()) {
             for (Player player : new ArrayList<>(this.players.values())) {
-                if (player.isOnline()) {
+                if (player.isOnline() && !player.closed) {
                     player.save(true);
-                } else if (!player.isConnected()) {
+                } else if (!player.isConnected() || player.closed) {
                     this.removePlayer(player);
                 }
             }
@@ -1460,14 +1473,6 @@ public class Server {
 
     // endregion
 
-    // region server singleton - Server 单例
-
-    public static Server getInstance() {
-        return instance;
-    }
-
-    // endregion
-
     // region chat & commands - 聊天与命令
 
     /**
@@ -1622,6 +1627,14 @@ public class Server {
      */
     public void silentExecuteCommand(String... commands) {
         this.silentExecuteCommand(null, commands);
+    }
+    
+    public static Server getInstance() {
+        return instance;
+    }
+    
+    public Map<Integer, Level> getLevels() {
+        return levels;
     }
 
     /**
@@ -2347,6 +2360,16 @@ public class Server {
                     break;
                 }
             }
+            if (player.getDisplayName().toLowerCase().startsWith(name)) {
+                int curDelta = player.getDisplayName().length() - name.length();
+                if (curDelta < delta) {
+                    found = player;
+                    delta = curDelta;
+                }
+                if (curDelta == 0) {
+                    break;
+                }
+            }
         }
 
         return found;
@@ -2363,7 +2386,7 @@ public class Server {
     public Player getPlayerExact(String name) {
         name = name.toLowerCase();
         for (Player player : this.getOnlinePlayers().values()) {
-            if (player.getName().toLowerCase().equals(name)) {
+            if (player.getName().toLowerCase().equals(name) | player.getDisplayName().toLowerCase().equals(name)) {
                 return player;
             }
         }
@@ -2571,17 +2594,6 @@ public class Server {
         return craftingManager;
     }
 
-    // endregion
-
-    // region Levels - 游戏世界相关
-
-    /**
-     * @return 获得所有游戏世界<br>Get all the game world
-     */
-    public Map<Integer, Level> getLevels() {
-        return levels;
-    }
-
     /**
      * @return 获得默认游戏世界<br>Get the default world
      */
@@ -2708,7 +2720,7 @@ public class Server {
         level.initLevel();
 
         //convert old Nukkit World
-        if (level.getProvider() instanceof Anvil anvil && anvil.isOldAnvil() && level.isOverWorld()) {
+        /*if (level.getProvider() instanceof Anvil anvil && anvil.isOldAnvil() && level.isOverWorld()) {
             log.info(Server.getInstance().getLanguage().tr("nukkit.anvil.converter.update"));
             var scan = new Scanner(System.in);
             var result = scan.next();
@@ -2746,7 +2758,7 @@ public class Server {
                     }
                 }
             } else System.exit(0);
-        }
+        }*/
 
         this.getPluginManager().callEvent(new LevelLoadEvent(level));
         level.setTickRate(this.baseTickRate);
@@ -3269,6 +3281,14 @@ public class Server {
         this.redstoneEnabled = redstoneEnabled;
     }
 
+    public boolean isEducationEditionEnabled() {
+        return educationEditionEnabled;
+    }
+
+    public void setEducationEditionEnabled(boolean educationEditionEnabled) {
+        this.educationEditionEnabled = educationEditionEnabled;
+    }
+
     //Revising later...
     public Config getConfig() {
         return this.config;
@@ -3409,6 +3429,14 @@ public class Server {
     @Since("1.19.30-r2")
     public int getMaximumSizePerChunk() {
         return maximumSizePerChunk;
+    }
+
+    public boolean isForceCustomItems() {
+        return forceCustomItems;
+    }
+
+    public void setForceCustomItems(boolean forceCustomItems) {
+        this.forceCustomItems = forceCustomItems;
     }
 
     @PowerNukkitXOnly

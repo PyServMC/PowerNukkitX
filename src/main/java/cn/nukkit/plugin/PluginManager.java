@@ -321,7 +321,7 @@ public class PluginManager {
 
                     if (missingDependency) {
                         for (String name : plugins.keySet()) {
-                            log.fatal(this.server.getLanguage().tr("nukkit.plugin.loadError", new String[]{name, "%nukkit.plugin.circularDependency"}));
+                            log.fatal(this.server.getLanguage().tr("nukkit.plugin.loadError", name, "%nukkit.plugin.circularDependency"));
                         }
                         plugins.clear();
                     }

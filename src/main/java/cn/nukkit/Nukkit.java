@@ -53,7 +53,7 @@ public class Nukkit {
     @PowerNukkitOnly
     public final static String GIT_COMMIT = getGitCommit();
     public final static String API_VERSION = dynamic("1.0.14");
-    public final static String CODENAME = dynamic("PowerNukkitX");
+    public final static String CODENAME = dynamic("PowerNukkitX × CUSTOM");
     @Deprecated
     public final static String MINECRAFT_VERSION = ProtocolInfo.MINECRAFT_VERSION;
     @Deprecated
@@ -92,6 +92,8 @@ public class Nukkit {
         // Force IPv4 since Nukkit is not compatible with IPv6
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("log4j.skipJansi", "false");
+        System.setProperty("java.awt.headless", "true");
+
         System.getProperties().putIfAbsent("io.netty.allocator.type", "unpooled"); // Disable memory pooling unless specified
 
         // Force Mapped ByteBuffers for LevelDB till fixed.

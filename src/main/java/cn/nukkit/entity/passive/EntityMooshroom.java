@@ -3,6 +3,7 @@ package cn.nukkit.entity.passive;
 import cn.nukkit.Player;
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.Since;
+import cn.nukkit.entity.EntityBalloonable;
 import cn.nukkit.entity.EntityWalkable;
 import cn.nukkit.entity.ai.behavior.Behavior;
 import cn.nukkit.entity.ai.behaviorgroup.BehaviorGroup;
@@ -32,7 +33,7 @@ import java.util.Set;
 /**
  * @author BeYkeRYkt (Nukkit Project)
  */
-public class EntityMooshroom extends EntityAnimal implements EntityWalkable {
+public class EntityMooshroom extends EntityAnimal implements EntityWalkable, EntityBalloonable {
 
     public static final int NETWORK_ID = 16;
 
@@ -110,6 +111,10 @@ public class EntityMooshroom extends EntityAnimal implements EntityWalkable {
     }
 
     @Override
+    public float getBalloonMass() {
+        return 1.0F;
+    }
+
     public boolean onInteract(Player player, Item item, Vector3 clickedPos) {
         if (super.onInteract(player, item, clickedPos)) {
             return true;

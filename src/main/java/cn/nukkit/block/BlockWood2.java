@@ -6,6 +6,8 @@ import cn.nukkit.blockproperty.ArrayBlockProperty;
 import cn.nukkit.blockproperty.BlockProperties;
 import cn.nukkit.blockproperty.BlockProperty;
 import cn.nukkit.blockproperty.value.WoodType;
+import cn.nukkit.item.ItemBlock;
+
 import org.jetbrains.annotations.NotNull;
 
 import static cn.nukkit.blockproperty.CommonBlockProperties.PILLAR_AXIS;
@@ -33,6 +35,15 @@ public class BlockWood2 extends BlockWood {
 
     public BlockWood2(int meta) {
         super(meta);
+    }
+
+    @Override
+    public ItemBlock asItemBlock(int count) {
+        if ((getDamage() & 0b1100) == 0b1100) {
+            return new ItemBlock(new BlockWoodBark(), (this.getDamage() & 0x3) + 4, count);
+        } else {
+            return new ItemBlock(this, this.getDamage() & 0x03, count);
+        }
     }
 
     @Override

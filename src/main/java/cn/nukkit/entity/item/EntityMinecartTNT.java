@@ -37,6 +37,11 @@ public class EntityMinecartTNT extends EntityMinecartAbstract implements EntityE
     }
 
     @Override
+    public Item toItem() {
+        return Item.get(Item.MINECART_WITH_TNT);
+    }
+
+    @Override
     public boolean isRideable() {
         return false;
     }

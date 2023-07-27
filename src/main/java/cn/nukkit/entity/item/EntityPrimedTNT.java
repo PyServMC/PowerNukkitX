@@ -23,6 +23,8 @@ import cn.nukkit.nbt.tag.CompoundTag;
 public class EntityPrimedTNT extends Entity implements EntityExplosive {
 
     public static final int NETWORK_ID = 65;
+
+    protected boolean allowUnderwater;
     protected int fuse;
     protected Entity source;
 
@@ -90,7 +92,12 @@ public class EntityPrimedTNT extends Entity implements EntityExplosive {
         } else {
             fuse = 80;
         }
-
+        if (this.namedTag.contains("AllowUnderwater")) {
+            this.allowUnderwater = this.namedTag.getBoolean("AllowUnderwater");
+        } else {
+            this.allowUnderwater = false;
+        }
+        
         this.setDataFlag(DATA_FLAGS, DATA_FLAG_IGNITED, true);
         this.setDataProperty(new IntEntityData(DATA_FUSE_LENGTH, fuse));
 
@@ -107,6 +114,7 @@ public class EntityPrimedTNT extends Entity implements EntityExplosive {
     public void saveNBT() {
         super.saveNBT();
         namedTag.putByte("Fuse", fuse);
+        namedTag.putBoolean("AllowUnderwater", this.allowUnderwater);
     }
 
     @Override
@@ -170,8 +178,10 @@ public class EntityPrimedTNT extends Entity implements EntityExplosive {
         if (event.isCancelled()) {
             return;
         }
-        Explosion explosion = new Explosion(this, event.getForce(), this);
+      
+        Explosion explosion = new Explosion(this, event.getForce(), this, this.allowUnderwater);
         explosion.setFireChance(event.getFireChance());
+      
         if (event.isBlockBreaking()) {
             explosion.explodeA();
         }

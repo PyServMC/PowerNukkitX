@@ -51,6 +51,7 @@ public abstract class BlockRoots extends BlockFlowable {
             case PODZOL:
             case DIRT:
             case SOUL_SOIL:
+            case MYCELIUM:
                 return true;
             default:
                 return false;
