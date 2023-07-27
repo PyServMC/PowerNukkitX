@@ -64,7 +64,7 @@ public class BlockStorage {
 
     public BlockStorage() {
         states = EMPTY.clone();
-        palette = PalettedBlockStorage.createFromBlockPalette();
+        palette = new PalettedBlockStorage();
     }
 
     @Since("1.4.0.0-PN")

@@ -3,11 +3,9 @@ package cn.nukkit.inventory.transaction;
 import cn.nukkit.Player;
 import cn.nukkit.api.PowerNukkitDifference;
 import cn.nukkit.api.Since;
-import cn.nukkit.block.BlockID;
 import cn.nukkit.event.inventory.InventoryClickEvent;
 import cn.nukkit.event.inventory.InventoryTransactionEvent;
 import cn.nukkit.inventory.Inventory;
-import cn.nukkit.inventory.ShulkerBoxInventory;
 import cn.nukkit.inventory.PlayerInventory;
 import cn.nukkit.inventory.transaction.action.InventoryAction;
 import cn.nukkit.inventory.transaction.action.SlotChangeAction;
@@ -72,13 +70,15 @@ public class InventoryTransaction {
     }
 
     public void addAction(InventoryAction action) {
-        if (action instanceof SlotChangeAction slotChangeAction) {
+        if (action instanceof SlotChangeAction) {
+            SlotChangeAction slotChangeAction = (SlotChangeAction) action;
 
             ListIterator<InventoryAction> iterator = this.actions.listIterator();
 
             while (iterator.hasNext()) {
                 InventoryAction existingAction = iterator.next();
-                if (existingAction instanceof SlotChangeAction existingSlotChangeAction) {
+                if (existingAction instanceof SlotChangeAction) {
+                    SlotChangeAction existingSlotChangeAction = (SlotChangeAction) existingAction;
                     if (!existingSlotChangeAction.getInventory().equals(slotChangeAction.getInventory()))
                         continue;
                     Item existingSource = existingSlotChangeAction.getSourceItem();
@@ -150,7 +150,8 @@ public class InventoryTransaction {
 
     protected void sendInventories() {
         for (InventoryAction action : this.actions) {
-            if (action instanceof SlotChangeAction sca) {
+            if (action instanceof SlotChangeAction) {
+                SlotChangeAction sca = (SlotChangeAction) action;
 
                 sca.getInventory().sendSlot(sca.getSlot(), this.source);
             } else if (action instanceof TakeLevelAction) {
@@ -174,9 +175,10 @@ public class InventoryTransaction {
         Player who = null;
 
         for (InventoryAction action : this.actions) {
-            if (!(action instanceof SlotChangeAction slotChange)) {
+            if (!(action instanceof SlotChangeAction)) {
                 continue;
             }
+            SlotChangeAction slotChange = (SlotChangeAction) action;
 
             if (slotChange.getInventory().getHolder() instanceof Player) {
                 who = (Player) slotChange.getInventory().getHolder();
@@ -236,15 +238,6 @@ public class InventoryTransaction {
                             }
                         }
                     }
-                }
-                if (action.getTargetItem().getCount() > action.getTargetItem().getMaxStackSize()) {
-                    this.sendInventories();
-                    return false;
-                }
-                int itemId = action.getTargetItem().getId();
-                if (((SlotChangeAction) action).getInventory() instanceof ShulkerBoxInventory && (itemId == BlockID.UNDYED_SHULKER_BOX || itemId == BlockID.SHULKER_BOX)) {
-                    this.sendInventories();
-                    return false;
                 }
             }
         }

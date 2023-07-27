@@ -70,14 +70,6 @@ public class BlockCake extends BlockTransparentMeta {
         return 0.5;
     }
 
-    public int getBites() {
-        return this.getIntValue(BITES);
-    }
-
-    public void setBites(int bites) {
-        this.setIntValue(BITES, bites);
-    }
-
     @PowerNukkitOnly
     @Override
     public int getWaterloggingLevel() {
@@ -86,7 +78,7 @@ public class BlockCake extends BlockTransparentMeta {
 
     @Override
     public double getMinX() {
-        return this.x + (1 + getBites() * 2) / 16;
+        return this.x + (1 + getDamage() * 2) / 16;
     }
 
     @Override
@@ -168,7 +160,7 @@ public class BlockCake extends BlockTransparentMeta {
 
     @Override
     public int getComparatorInputOverride() {
-        return (7 - this.getBites()) * 2;
+        return (7 - this.getDamage()) * 2;
     }
 
     @Override

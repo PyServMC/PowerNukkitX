@@ -1,7 +1,5 @@
 package cn.nukkit.blockentity;
 
-import cn.nukkit.Player;
-import cn.nukkit.Server;
 import cn.nukkit.api.PowerNukkitDifference;
 import cn.nukkit.api.Since;
 import cn.nukkit.block.Block;
@@ -65,6 +63,7 @@ public class BlockEntityJukebox extends BlockEntitySpawnable {
         }
     }
 
+    //TODO: Transfer the stop sound to the new sound method
     public void stop() {
         if (this.recordItem instanceof ItemRecord itemRecord) {
             StopSoundPacket packet = new StopSoundPacket();

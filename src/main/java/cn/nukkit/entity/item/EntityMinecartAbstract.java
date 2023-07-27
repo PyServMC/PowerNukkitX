@@ -22,7 +22,6 @@ import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemMinecart;
 import cn.nukkit.level.GameRule;
-import cn.nukkit.level.Level;
 import cn.nukkit.level.Location;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.*;
@@ -56,7 +55,6 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
     private final boolean devs = false; // Avoid maintained features into production
     private double currentSpeed = 0;
     private Block blockInside;
-    private Block lastBlock;
     // Plugins modifiers
     private boolean slowWhenEmpty = true;
     private double derailedX = 0.5;
@@ -135,9 +133,6 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
         if (isAlive()) {
             super.onUpdate(currentTick);
 
-            this.blocksAround = null;
-            this.collisionBlocks = null;
-
             // The damage token
             if (getHealth() < 20) {
                 setHealth(getHealth() + 1);
@@ -158,14 +153,6 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
             }
 
             Block block = level.getBlock(new Vector3(dx, dy, dz));
-            if(lastBlock != null && !(lastBlock.equals(block))) {
-                if(Rail.isRailBlock(lastBlock)) {
-                    if(lastBlock instanceof BlockRailDetector) {
-                        level.scheduleUpdate(lastBlock, 10);
-                    }
-                }
-            }
-            lastBlock = block;
 
             // Ensure that the block is a rail
             if (Rail.isRailBlock(block)) {
@@ -295,13 +282,6 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
     @Override
     public void close() {
         super.close();
-
-        Block block = level.getBlock(new Vector3(MathHelper.floor(x), MathHelper.floor(y), MathHelper.floor(z)));
-        if(Rail.isRailBlock(block)) {
-            if(block instanceof BlockRailDetector) {
-                block.onUpdate(Level.BLOCK_UPDATE_SCHEDULED);
-            }
-        }
 
         for (Entity passenger : new ArrayList<>(this.passengers)) {
             dismountEntity(passenger);
@@ -523,19 +503,19 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
 
         switch (Orientation.byMetadata(block.getRealMeta())) {
             case ASCENDING_NORTH:
-                motionZ += 0.0078125D;
-                y += 1;
-                break;
-            case ASCENDING_SOUTH:
-                motionZ -= 0.0078125D;
-                y += 1;
-                break;
-            case ASCENDING_EAST:
                 motionX -= 0.0078125D;
                 y += 1;
                 break;
-            case ASCENDING_WEST:
+            case ASCENDING_SOUTH:
                 motionX += 0.0078125D;
+                y += 1;
+                break;
+            case ASCENDING_EAST:
+                motionZ += 0.0078125D;
+                y += 1;
+                break;
+            case ASCENDING_WEST:
+                motionZ -= 0.0078125D;
                 y += 1;
                 break;
         }
@@ -671,16 +651,16 @@ public abstract class EntityMinecartAbstract extends EntityVehicle {
                 motionX += motionX / newMovie * nextMovie;
                 motionZ += motionZ / newMovie * nextMovie;
             } else if (block.getOrientation() == Orientation.STRAIGHT_NORTH_SOUTH) {
-                if (level.getBlock(new Vector3(dx, dy, dz - 1)).isNormalBlock()) {
-                    motionZ = 0.02D;
-                } else if (level.getBlock(new Vector3(dx, dy, dz + 1)).isNormalBlock()) {
-                    motionZ = -0.02D;
-                }
-            } else if (block.getOrientation() == Orientation.STRAIGHT_EAST_WEST) {
                 if (level.getBlock(new Vector3(dx - 1, dy, dz)).isNormalBlock()) {
                     motionX = 0.02D;
                 } else if (level.getBlock(new Vector3(dx + 1, dy, dz)).isNormalBlock()) {
                     motionX = -0.02D;
+                }
+            } else if (block.getOrientation() == Orientation.STRAIGHT_EAST_WEST) {
+                if (level.getBlock(new Vector3(dx, dy, dz - 1)).isNormalBlock()) {
+                    motionZ = 0.02D;
+                } else if (level.getBlock(new Vector3(dx, dy, dz + 1)).isNormalBlock()) {
+                    motionZ = -0.02D;
                 }
             }
         }

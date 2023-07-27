@@ -98,11 +98,7 @@ public class BlockTrappedChest extends BlockChest {
         BlockEntity blockEntity = this.level.getBlockEntity(this);
 
         if (blockEntity instanceof BlockEntityChest) {
-            for (Player player : ((BlockEntityChest) blockEntity).getInventoryWithoutCheckingToPair().getViewers()) {
-                if (!player.isSpectator()) {
-                    playerCount++;
-                }
-            }
+            playerCount = ((BlockEntityChest) blockEntity).getInventory().getViewers().size();
         }
 
         return Math.min(playerCount, 15);

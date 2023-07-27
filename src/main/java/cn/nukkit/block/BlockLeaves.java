@@ -11,7 +11,6 @@ import cn.nukkit.blockproperty.BooleanBlockProperty;
 import cn.nukkit.blockproperty.value.WoodType;
 import cn.nukkit.event.block.LeavesDecayEvent;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemID;
 import cn.nukkit.item.ItemTool;
 import cn.nukkit.item.enchantment.Enchantment;
@@ -22,7 +21,6 @@ import it.unimi.dsi.fastutil.longs.Long2LongMap;
 import it.unimi.dsi.fastutil.longs.Long2LongOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,14 +59,6 @@ public class BlockLeaves extends BlockTransparentMeta {
 
     public BlockLeaves() {
         this(0);
-    }
-
-    @Since("1.4.0.0-PN")
-    @PowerNukkitOnly
-    @Nonnull
-    @Override
-    public ItemBlock asItemBlock(int count) {
-        return new ItemBlock(this, this.getDamage() & 0x3, count);
     }
 
     public BlockLeaves(int meta) {
@@ -138,7 +128,7 @@ public class BlockLeaves extends BlockTransparentMeta {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (shearDropsBlock() && item.isShears()) {
+        if (item.isShears()) {
             return new Item[]{
                     toItem()
             };
@@ -294,9 +284,5 @@ public class BlockLeaves extends BlockTransparentMeta {
     @PowerNukkitOnly
     public  boolean sticksToPiston() {
         return false;
-    }
-
-    public boolean shearDropsBlock() {
-        return true;
     }
 }

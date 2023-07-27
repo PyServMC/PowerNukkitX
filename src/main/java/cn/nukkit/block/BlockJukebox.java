@@ -80,9 +80,6 @@ public class BlockJukebox extends BlockSolid implements BlockEntityHolder<BlockE
             item.count--;
             jukebox.setRecordItem(record);
             jukebox.play();
-            if (player != null) {
-                player.sendPopupJukebox("Now playing: " + record.getName());
-            }
             return true;
         }
 

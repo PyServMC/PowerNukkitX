@@ -17,8 +17,6 @@ public class ItemStackResponsePacket extends DataPacket {
     @Since("1.4.0.0-PN")
     public static final byte NETWORK_ID = ProtocolInfo.ITEM_STACK_RESPONSE_PACKET;
 
-
-
     @Override
     public void encode() {
         throw new UnsupportedOperationException(); //TODO

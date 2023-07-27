@@ -7,6 +7,4 @@ import cn.nukkit.item.Item;
 public interface SmeltingRecipe extends Recipe {
     @PowerNukkitOnly
     Item getInput();
-
-    double getExperience();
 }

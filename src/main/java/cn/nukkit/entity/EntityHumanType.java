@@ -58,11 +58,6 @@ public abstract class EntityHumanType extends EntityCreature implements IHuman {
     }
 
     @Override
-    public Item toItem() {
-        return Item.get(Item.AIR);
-    }
-
-    @Override
     public Item[] getDrops() {
         if (this.inventory != null) {
             List<Item> drops = new ArrayList<>(this.inventory.getContents().values());
@@ -209,8 +204,6 @@ public abstract class EntityHumanType extends EntityCreature implements IHuman {
                 return Item.get(BlockID.AIR, 0, 0);
             }
         }
-
-
 
         return armor;
     }

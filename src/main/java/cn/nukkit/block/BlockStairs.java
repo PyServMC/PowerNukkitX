@@ -10,7 +10,6 @@ import cn.nukkit.blockproperty.BlockProperties;
 import cn.nukkit.blockproperty.BlockProperty;
 import cn.nukkit.blockproperty.BooleanBlockProperty;
 import cn.nukkit.item.Item;
-import cn.nukkit.item.ItemBlock;
 import cn.nukkit.math.AxisAlignedBB;
 import cn.nukkit.math.BlockFace;
 import cn.nukkit.math.SimpleAxisAlignedBB;
@@ -80,10 +79,7 @@ public abstract class BlockStairs extends BlockTransparentMeta implements Faceab
 
         if ((fy > 0.5 && face != BlockFace.UP) || face == BlockFace.DOWN) {
             setUpsideDown(true);
-        } else {
-            setUpsideDown(false);
         }
-
         this.getLevel().setBlock(block, this, true, true);
 
         return true;
@@ -187,18 +183,5 @@ public abstract class BlockStairs extends BlockTransparentMeta implements Faceab
     @Override
     public void setBlockFace(BlockFace face) {
         setPropertyValue(STAIRS_DIRECTION, face);
-    }
-
-    public boolean isBurnable() {
-        switch (this.getId()) {
-            case BlockID.OAK_STAIRS:
-            case BlockID.SPRUCE_STAIRS:
-            case BlockID.BIRCH_STAIRS:
-            case BlockID.JUNGLE_STAIRS:
-            case BlockID.ACACIA_WOOD_STAIRS:
-            case BlockID.DARK_OAK_WOOD_STAIRS:
-                return true;
-        }
-        return false;
     }
 }

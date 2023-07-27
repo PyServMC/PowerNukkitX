@@ -57,15 +57,12 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static cn.nukkit.network.protocol.SetEntityLinkPacket.TYPE_PASSENGER;
-import cn.nukkit.metadata.MetadataValue;
-import cn.nukkit.plugin.Plugin;
-
-import java.util.List;
 
 /**
  * @author PikyCZ
  */
-public class EntityHorse extends EntityAnimal implements EntityWalkable, EntityVariant, EntityMarkVariant, EntityRideable, EntityOwnable, InventoryHolder, EntityAgeable, EntityBalloonable {
+public class EntityHorse extends EntityAnimal implements EntityWalkable, EntityVariant, EntityMarkVariant, EntityRideable, EntityOwnable, InventoryHolder, EntityAgeable {
+
     public static final int NETWORK_ID = 23;
     private static final int[] VARIANTS = {0, 1, 2, 3, 4, 5, 6};
     private static final int[] MARK_VARIANTS = {0, 1, 2, 3, 4};
@@ -527,29 +524,5 @@ public class EntityHorse extends EntityAnimal implements EntityWalkable, EntityV
         }
 
         return addEntity;
-    }
-    
-    public float getBalloonMass() {
-        return 1.0F;
-    }
-
-    @Override
-    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-
-    }
-
-    @Override
-    public List<MetadataValue> getMetadata(String metadataKey) {
-        return null;
-    }
-
-    @Override
-    public boolean hasMetadata(String metadataKey) {
-        return false;
-    }
-
-    @Override
-    public void removeMetadata(String metadataKey, Plugin owningPlugin) {
-
     }
 }

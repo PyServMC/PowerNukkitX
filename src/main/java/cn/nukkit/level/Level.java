@@ -715,7 +715,7 @@ public class Level implements ChunkManager, Metadatable {
     public void initLevel(@Nullable DimensionData givenDimensionData) {
         Generator generator = generators.get();
         if (dimensionData == null || givenDimensionData != null) {
-            this.dimensionData = givenDimensionData == null ? generator != null ? generator.getDimensionData() : DimensionEnum.OVERWORLD.getDimensionData() : givenDimensionData;
+            this.dimensionData = givenDimensionData == null ? generator.getDimensionData() : givenDimensionData;
             if (this.requireProvider() instanceof DimensionDataProvider dimensionDataProvider) {
                 dimensionDataProvider.setDimensionData(dimensionData);
             }
@@ -798,7 +798,6 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     public void addSound(Vector3 pos, Sound sound, float volume, float pitch, Player... players) {
-        Preconditions.checkArgument(!sound.isEdu() || this.server.isEducationEditionEnabled(), "Selected sound is from education edition! Enable education edition in nukkit.yml to play this sound.");
         Preconditions.checkArgument(volume >= 0 && volume <= 1, "Sound volume must be between 0 and 1");
         Preconditions.checkArgument(pitch >= 0, "Sound pitch must be higher than 0");
 
@@ -1414,7 +1413,8 @@ public class Level implements ChunkManager, Metadatable {
     }
 
     private void performThunder(long index, FullChunk chunk) {
-        if (ThreadLocalRandom.current().nextInt(100000) == 0) {
+        if (areNeighboringChunksLoaded(index)) return;
+        if (ThreadLocalRandom.current().nextInt(10000) == 0) {
             int LCG = this.getUpdateLCG() >> 2;
 
             int chunkX = chunk.getX() * 16;
@@ -2859,7 +2859,7 @@ public class Level implements ChunkManager, Metadatable {
                     for (Tag v : ((ListTag<? extends Tag>) tag).getAll()) {
                         if (v instanceof StringTag) {
                             Item entry = Item.fromString(((StringTag) v).data);
-                            if (entry.getBlock() != null && entry.getBlock().getId() == target.getId()) {
+                            if (entry.getId() > 0 && entry.getBlock() != null && entry.getBlock().getId() == target.getId()) {
                                 canBreak = true;
                                 break;
                             }
@@ -2974,6 +2974,7 @@ public class Level implements ChunkManager, Metadatable {
         }
 
         if (this.gameRules.getBoolean(GameRule.DO_TILE_DROPS)) {
+
             if (!isSilkTouch && (mustDrop || player != null && ((player.isSurvival() || player.isAdventure()) || setBlockDestroy)) && dropExp > 0 && drops.length != 0) {
                 this.dropExpOrb(vector.add(0.5, 0.5, 0.5), dropExp);
             }
@@ -3071,7 +3072,7 @@ public class Level implements ChunkManager, Metadatable {
         if (target.getId() == Item.AIR) {
             return null;
         }
-
+        int touchStatus = 0;
         if (player != null) {
             PlayerInteractEvent ev = new PlayerInteractEvent(player, item, target, face, target.getId() == 0 ? Action.RIGHT_CLICK_AIR : Action.RIGHT_CLICK_BLOCK);
 
@@ -3082,10 +3083,12 @@ public class Level implements ChunkManager, Metadatable {
             if (!player.isOp() && isInSpawnRadius(target)) {
                 ev.setCancelled();
             }
-
             this.server.getPluginManager().callEvent(ev);
             if (!ev.isCancelled()) {
-                target.onTouch(player, ev.getAction(), face);
+                target.onTouch(player, ev.getAction());
+                if (ev.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                    target.onPlayerRightClick(player, item, face, new Vector3(fx, fy, fz));
+                }
                 if ((!player.isSneaking() || player.getInventory().getItemInHand().isNull()) && target.canBeActivated() && target.onActivate(item, player)) {
                     if (item.isTool() && item.getDamage() >= item.getMaxDurability()) {
                         addSound(player, Sound.RANDOM_BREAK);
@@ -3116,6 +3119,7 @@ public class Level implements ChunkManager, Metadatable {
             }
             return item;
         }
+
         Block hand;
         if (item.canBePlaced()) {
             hand = item.getBlock();
@@ -3128,16 +3132,17 @@ public class Level implements ChunkManager, Metadatable {
             return null;
         }
 
+        //处理放置梯子,我们应该提前给hand设置方向,这样后面计算是否碰撞实体才准确
+        if (hand instanceof BlockLadder) {
+            if (target instanceof BlockLadder) {
+                hand.setPropertyValue(CommonBlockProperties.FACING_DIRECTION, face.getOpposite());
+            } else hand.setPropertyValue(CommonBlockProperties.FACING_DIRECTION, face);
+        }
+
         //cause bug (eg: frog_spawn) (and I don't know what this is for)
         if (!(hand instanceof BlockFrogSpawn) && target.canBeReplaced()) {
             block = target;
             hand.position(block);
-        }
-        //处理放置梯子,我们应该提前给hand设置方向,这样后面计算是否碰撞实体才准确
-        if (hand instanceof BlockLadder) {
-            if (target instanceof BlockLadder) {
-                hand.setDamage(face.getOpposite().getIndex());
-            } else hand.setDamage(face.getIndex());
         }
 
         if (!hand.canPassThrough() && hand.getBoundingBox() != null) {
@@ -3152,13 +3157,14 @@ public class Level implements ChunkManager, Metadatable {
             }
             if (player != null) {
                 var diff = player.getNextPosition().subtract(player.getPosition());
-                var aabb = player.getBoundingBox().getOffsetBoundingBox(diff.x, diff.y <= 0 ? 0 : diff.y, diff.z);
-                if (aabb.offset(0, 0.01, 0).intersectsWith(hand.getBoundingBox())) {
+                var aabb = player.getBoundingBox().getOffsetBoundingBox(diff.x, diff.y, diff.z);
+                if (aabb.intersectsWith(hand.getBoundingBox().shrink(0.02, 0.02, 0.02))) {
                     ++realCount;
                 }
             }
             if (realCount > 0) {
-                return null; // Entity in block
+                // Entity in block
+                return null;
             }
         }
 
@@ -4005,10 +4011,6 @@ public class Level implements ChunkManager, Metadatable {
             throw new LevelException("Invalid Entity level");
         }
 
-        if (entity.getId() < 0) {
-            entity.close();
-            return;
-        }
         if (entity instanceof Player) {
             this.players.remove(entity.getId());
             this.checkSleep();

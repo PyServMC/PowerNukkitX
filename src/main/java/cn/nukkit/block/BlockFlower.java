@@ -10,7 +10,6 @@ import cn.nukkit.blockproperty.BlockProperties;
 import cn.nukkit.blockproperty.BlockProperty;
 import cn.nukkit.blockproperty.exception.InvalidBlockPropertyValueException;
 import cn.nukkit.blockproperty.value.SmallFlowerType;
-import cn.nukkit.api.Since;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.particle.BoneMealParticle;
@@ -80,15 +79,7 @@ public class BlockFlower extends BlockFlowable implements BlockFlowerPot.FlowerP
     @Deprecated
     @DeprecationDetails(since = "1.4.0.0-PN", by = "PowerNukkit", reason = "Magic value. Use FlowerType instead")
     public static final int TYPE_OXEYE_DAISY = 8;
-
-    @Deprecated
-    @DeprecationDetails(since = "FUTURE", by = "PowerNukkit", reason = "Magic value. Use FlowerType instead")
-    @Since("FUTURE")
     public static final int TYPE_CORNFLOWER = 9;
-
-    @Deprecated
-    @DeprecationDetails(since = "FUTURE", by = "PowerNukkit", reason = "Magic value. Use FlowerType instead")
-    @Since("FUTURE")
     public static final int TYPE_LILY_OF_THE_VALLEY = 10;
 
     public BlockFlower() {
@@ -154,7 +145,6 @@ public class BlockFlower extends BlockFlowable implements BlockFlowerPot.FlowerP
             case PODZOL:
             case DIRT_WITH_ROOTS:
             case MOSS_BLOCK:
-            case MYCELIUM:
                 return true;
             default:
                 return false;

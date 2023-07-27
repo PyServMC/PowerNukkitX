@@ -7,8 +7,6 @@ import cn.nukkit.api.PowerNukkitXOnly;
 import cn.nukkit.api.Since;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockID;
-import cn.nukkit.entity.Entity;
-import cn.nukkit.entity.item.EntityXPOrb;
 import cn.nukkit.event.inventory.FurnaceBurnEvent;
 import cn.nukkit.event.inventory.FurnaceSmeltEvent;
 import cn.nukkit.inventory.*;
@@ -17,7 +15,6 @@ import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemBucket;
 import cn.nukkit.level.Sound;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.math.NukkitMath;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
@@ -37,8 +34,6 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
     protected int burnDuration;
     protected int cookTime;
     protected int maxTime;
-    protected int speedMultiplier = 1;
-    protected double experience;
     @Since("1.19.50-r3")
     @PowerNukkitXOnly
     protected float storedXP;
@@ -129,6 +124,11 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
     }
 
     @Override
+    public boolean hasName() {
+        return this.namedTag.contains("CustomName");
+    }
+
+    @Override
     public void setName(String name) {
         if (name == null || name.equals("")) {
             this.namedTag.remove("CustomName");
@@ -136,11 +136,6 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
         }
 
         this.namedTag.putString("CustomName", name);
-    }
-
-    @Override
-    public boolean hasName() {
-        return this.namedTag.contains("CustomName");
     }
 
     @Override
@@ -272,7 +267,7 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
         if (burnTime > 0 && ev.isBurning()) {
             fuel.setCount(fuel.getCount() - 1);
             if (fuel.getCount() == 0) {
-                if (fuel.getId() == Item.BUCKET && ((ItemBucket) fuel).isLava()) {
+                if (fuel.getId() == Item.BUCKET && ((ItemBucket)fuel).isLava()) {
                     fuel.setDamage(0);
                     fuel.setCount(1);
                 } else {
@@ -290,15 +285,7 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
 
     @PowerNukkitOnly
     protected int getSpeedMultiplier() {
-        return speedMultiplier;
-    }
-
-    public void setSpeedMultiplier(int speedMultiplier) {
-        if (speedMultiplier >= 1) {
-            this.speedMultiplier = speedMultiplier;
-        } else {
-            speedMultiplier = 1;
-        }
+        return 1;
     }
 
     @Override
@@ -339,15 +326,14 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
             if (smelt != null && canSmelt) {
                 cookTime++;
                 if (cookTime >= readyAt) {
-                    double experience = smelt.getExperience();
                     int count = product.getCount() + 1;
                     product = smelt.getResult().clone();
                     product.setCount(count);
+
                     FurnaceSmeltEvent ev = new FurnaceSmeltEvent(this, raw, product, (float) this.server.getCraftingManager().getRecipeXp(smelt));
                     this.server.getPluginManager().callEvent(ev);
                     if (!ev.isCancelled()) {
                         this.inventory.setResult(ev.getResult());
-                        this.experience += ev.getXp();
                         raw.setCount(raw.getCount() - 1);
                         if (raw.getCount() == 0) {
                             raw = new ItemBlock(Block.get(BlockID.AIR), 0, 0);
@@ -392,15 +378,6 @@ public class BlockEntityFurnace extends BlockEntitySpawnable implements Inventor
         }
 
         return ret;
-    }
-
-    public void releaseExperience() {
-        int experience = NukkitMath.floorDouble(this.experience);
-        if(experience >= 1) {
-            this.setStoredXP((float) (this.experience - experience));
-            EntityXPOrb orb = new EntityXPOrb(this.getChunk(), Entity.getDefaultNBT(this).putShort("Value", experience));
-            orb.spawnToAll();
-        }
     }
 
     @Override

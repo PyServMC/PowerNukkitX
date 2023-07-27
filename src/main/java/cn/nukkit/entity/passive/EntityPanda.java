@@ -2,16 +2,11 @@ package cn.nukkit.entity.passive;
 
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.Since;
-import cn.nukkit.entity.EntityBalloonable;
 import cn.nukkit.entity.EntityWalkable;
 import cn.nukkit.level.format.FullChunk;
-import cn.nukkit.metadata.MetadataValue;
 import cn.nukkit.nbt.tag.CompoundTag;
-import cn.nukkit.plugin.Plugin;
 
-import java.util.List;
-
-public class EntityPanda extends EntityAnimal implements EntityWalkable, EntityBalloonable {
+public class EntityPanda extends EntityAnimal implements EntityWalkable {
 
     public static final int NETWORK_ID = 113;
 
@@ -46,30 +41,5 @@ public class EntityPanda extends EntityAnimal implements EntityWalkable, EntityB
     @Override
     public String getOriginalName() {
         return "Panda";
-    }
-
-    @Override
-    public float getBalloonMass() {
-        return 1.5F;
-    }
-
-    @Override
-    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-
-    }
-
-    @Override
-    public List<MetadataValue> getMetadata(String metadataKey) {
-        return null;
-    }
-
-    @Override
-    public boolean hasMetadata(String metadataKey) {
-        return false;
-    }
-
-    @Override
-    public void removeMetadata(String metadataKey, Plugin owningPlugin) {
-
     }
 }

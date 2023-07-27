@@ -5,7 +5,6 @@ import cn.nukkit.api.PowerNukkitXOnly;
 import cn.nukkit.api.Since;
 import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.item.Item;
-import cn.nukkit.blockentity.BlockEntityItemFrame;
 import cn.nukkit.item.ItemItemFrameGlow;
 import org.jetbrains.annotations.NotNull;
 

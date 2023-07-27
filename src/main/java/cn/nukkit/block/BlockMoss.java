@@ -1,26 +1,30 @@
 package cn.nukkit.block;
 
 import cn.nukkit.Player;
+import cn.nukkit.api.PowerNukkitOnly;
+import cn.nukkit.api.Since;
 import cn.nukkit.blockproperty.value.DoublePlantType;
 import cn.nukkit.blockproperty.value.TallGrassType;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
+import cn.nukkit.level.ParticleEffect;
 import cn.nukkit.level.Position;
-import cn.nukkit.level.generator.object.ObectMoss;
-import cn.nukkit.level.generator.object.ObjectTallGrass;
-import cn.nukkit.level.particle.BoneMealParticle;
-import cn.nukkit.math.NukkitRandom;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 
+
+/**
+ * @author CoolLoong
+ * @since 02.12.2022
+ */
+@PowerNukkitOnly
+@Since("FUTURE")
 public class BlockMoss extends BlockSolid {
 
-    @Override
-    public String getName() {
-        return "Moss Block";
+    public BlockMoss() {
     }
 
     @Override
@@ -29,8 +33,8 @@ public class BlockMoss extends BlockSolid {
     }
 
     @Override
-    public int getToolType() {
-        return ItemTool.TYPE_HOE;
+    public String getName() {
+        return "MOSS";
     }
 
     @Override
@@ -40,12 +44,7 @@ public class BlockMoss extends BlockSolid {
 
     @Override
     public double getResistance() {
-        return 0.1;
-    }
-
-    @Override
-    public boolean canHarvestWithHand() {
-        return true;
+        return 2.5;
     }
 
     @Override
@@ -54,19 +53,12 @@ public class BlockMoss extends BlockSolid {
     }
 
     @Override
-    public boolean onActivate(@Nonnull Item item) {
-        return this.onActivate(item, null);
-    }
-
-    @Override
-    public boolean onActivate(@Nonnull Item item, @Nullable Player player) {
-        if(item.isFertilizer()) {
-            if(player != null && (player.gamemode & 0x01) == 0) {
-                item.count--;
-            }
-            this.level.addParticle(new BoneMealParticle(this));
-            ObjectTallGrass.growGrass(this.getLevel(), this, new NukkitRandom());
-            ObectMoss.growMoss(this.getLevel(), this, new NukkitRandom());
+    public boolean onActivate(@NotNull Item item, @Nullable Player player) {
+        if (item.isFertilizer()) {
+            convertToMoss(this);
+            populateRegion(this);
+            this.level.addParticleEffect(this.add(0.5, 1.5, 0.5), ParticleEffect.CROP_GROWTH_AREA);
+            item.count--;
             return true;
         }
         return false;
@@ -165,6 +157,11 @@ public class BlockMoss extends BlockSolid {
             default:
                 return false;
         }
+    }
+
+    @Override
+    public int getToolType() {
+        return ItemTool.TYPE_HOE;
     }
 
     @Override

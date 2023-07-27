@@ -4,11 +4,8 @@ import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.Since;
 import cn.nukkit.blockproperty.BlockProperties;
 import cn.nukkit.blockproperty.value.StoneSlab1Type;
-import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author CreeperFace
@@ -33,14 +30,6 @@ public class BlockSlabStone extends BlockSlab {
 
     public BlockSlabStone() {
         this(0);
-    }
-
-    @Since("1.4.0.0-PN")
-    @PowerNukkitOnly
-    @Nonnull
-    @Override
-    public ItemBlock asItemBlock(int count) {
-        return new ItemBlock(this, this.getDamage() & 0x07, count);
     }
 
     public BlockSlabStone(int meta) {

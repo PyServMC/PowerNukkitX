@@ -30,7 +30,6 @@ level-settings:
  base-tick-rate: 1
  always-tick-players: false
  tick-redstone: true
- education-edition: false
 
 chunk-saving:
  maximum-size-per-chunk: 1048576

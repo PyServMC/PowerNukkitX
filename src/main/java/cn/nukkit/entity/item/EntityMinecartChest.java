@@ -54,11 +54,6 @@ public class EntityMinecartChest extends EntityMinecartAbstract implements Inven
     }
 
     @Override
-    public Item toItem() {
-        return Item.get(Item.MINECART_WITH_CHEST);
-    }
-
-    @Override
     public void dropItem() {
         for (Item item : this.inventory.getContents().values()) {
             this.level.dropItem(this, item);

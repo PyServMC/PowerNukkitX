@@ -145,18 +145,6 @@ public class BlockLectern extends BlockTransparentMeta implements RedstoneCompon
         return BlockEntityHolder.setBlockAndCreateEntity(this) != null;
     }
 
-    @Since("1.4.0.0-PN")
-    @PowerNukkitOnly
-    @Override
-    public int onTouch(@Nullable Player player, Action action, BlockFace face) {
-        onUpdate(Level.BLOCK_UPDATE_TOUCH);
-        if (player != null && action == Action.LEFT_CLICK_BLOCK && player.isSurvival()) {
-            dropBook(player);
-            return 1;
-        }
-        return 0;
-    }
-  
     @Override
     public boolean onActivate(@NotNull Item item, @Nullable Player player) {
         BlockEntityLectern lectern = getOrCreateBlockEntity();

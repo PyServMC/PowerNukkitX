@@ -6,7 +6,6 @@ import cn.nukkit.blockproperty.BlockProperties;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.ItemBlock;
 import cn.nukkit.item.ItemTool;
-import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.math.NukkitRandom;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,23 +62,18 @@ public class BlockHugeMushroomRed extends BlockSolidMeta {
 
     @Override
     public Item[] getDrops(Item item) {
-        if (item.hasEnchantment(Enchantment.ID_SILK_TOUCH)) {
+        if (new NukkitRandom().nextRange(1, 20) == 1) {
             return new Item[]{
-                    new ItemBlock(Block.get(BlockID.RED_MUSHROOM_BLOCK), this.getDamage() == 10 ? 10 : 14)
+                    new ItemBlock(Block.get(BlockID.RED_MUSHROOM))
             };
+        } else {
+            return Item.EMPTY_ARRAY;
         }
-        NukkitRandom random = new NukkitRandom();
-        if (random.nextRange(1, 20) == 1) {
-            return new Item[]{
-                    new ItemBlock(Block.get(BlockID.RED_MUSHROOM), 0, random.nextRange(1, 2))
-            };
-        }
-        return Item.EMPTY_ARRAY;
     }
 
     @Override
     public boolean canSilkTouch() {
-        return false;
+        return true;
     }
 
 }

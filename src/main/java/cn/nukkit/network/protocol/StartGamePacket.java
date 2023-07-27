@@ -59,7 +59,7 @@ public class StartGamePacket extends DataPacket {
     public boolean worldEditor;
     public int dayCycleStopTime = -1; //-1 = not stopped, any positive value = stopped at that time
     public int eduEditionOffer = 0;
-    public boolean hasEduFeaturesEnabled = Server.getInstance().isEducationEditionEnabled();
+    public boolean hasEduFeaturesEnabled = false;
     public float rainLevel;
     public float lightningLevel;
     public boolean hasConfirmedPlatformLockedContent = false;
@@ -74,8 +74,6 @@ public class StartGamePacket extends DataPacket {
     public boolean bonusChest = false;
     public boolean hasStartWithMapEnabled = false;
 
-    @Since("1.3.0.0-PN")
-    public boolean trustingPlayers;
     public int permissionLevel = 1;
     public int serverChunkTickRange = 4;
     public boolean hasLockedBehaviorPack = false;
@@ -85,7 +83,11 @@ public class StartGamePacket extends DataPacket {
     public boolean isFromWorldTemplate = false;
     public boolean isWorldTemplateOptionLocked = false;
     public boolean isOnlySpawningV1Villagers = false;
+
     public String vanillaVersion = ProtocolInfo.MINECRAFT_VERSION_NETWORK;
+    //HACK: For now we can specify this version, since the new chunk changes are not relevant for our Anvil format.
+    //However, it could be that Microsoft will prevent this in a new update.
+
     public String levelId = ""; //base64 string, usually the same as world folder name in vanilla
     public String worldName;
     public String premiumWorldTemplateId = "";
@@ -99,14 +101,12 @@ public class StartGamePacket extends DataPacket {
     public boolean isInventoryServerAuthoritative;
 
     public long currentTick;
-    public long blockRegistryChecksum = 0;
 
     public int enchantmentSeed;
 
     public final List<CustomBlockDefinition> blockProperties = new ArrayList<>();
 
     public String multiplayerCorrelationId = "";
-    public byte chatRestrictionLevel;
 
     public boolean isDisablingPersonas;
 
@@ -133,6 +133,7 @@ public class StartGamePacket extends DataPacket {
      * @since v582
      */
     public boolean exportedFromEditor;
+    public byte chatRestrictionLevel;
     public boolean disablePlayerInteractions;
     /**
      * @since v589

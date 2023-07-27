@@ -43,11 +43,6 @@ public abstract class BlockTerracottaGlazed extends BlockSolidMeta implements Fa
     }
 
     @Override
-    public boolean canBePulled() {
-        return false;
-    }
-
-    @Override
     public double getHardness() {
         return 1.4;
     }
@@ -86,5 +81,10 @@ public abstract class BlockTerracottaGlazed extends BlockSolidMeta implements Fa
     @Override
     public boolean canBePushed() {
         return true;
+    }
+
+    @Override
+    public boolean canBePulled() {
+        return false;
     }
 }

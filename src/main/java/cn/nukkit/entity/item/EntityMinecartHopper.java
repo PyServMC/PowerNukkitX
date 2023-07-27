@@ -1,7 +1,6 @@
 package cn.nukkit.entity.item;
 
 import cn.nukkit.Player;
-import cn.nukkit.api.PowerNukkitDifference;
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.api.PowerNukkitXOnly;
 import cn.nukkit.api.Since;
@@ -13,8 +12,6 @@ import cn.nukkit.blockentity.BlockEntity;
 import cn.nukkit.entity.Entity;
 import cn.nukkit.event.block.HopperSearchItemEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
-import cn.nukkit.event.inventory.InventoryMoveItemEvent;
-import cn.nukkit.inventory.Inventory;
 import cn.nukkit.inventory.InventoryHolder;
 import cn.nukkit.inventory.MinecartHopperInventory;
 import cn.nukkit.item.Item;
@@ -217,60 +214,5 @@ public class EntityMinecartHopper extends EntityMinecartAbstract implements Inve
                 }
             }
         }
-    }
-
-    public boolean pullMinecartItems() {
-        if (this.inventory.isFull()) {
-            return false;
-        }
-        for(Entity entity : level.getNearbyEntities(new SimpleAxisAlignedBB(this.getBoundingBox().getMinX(), this.getBoundingBox().getMinY() + 0.875, this.getBoundingBox().getMinZ(), this.getBoundingBox().getMaxX(), this.getBoundingBox().getMaxY() + 1.125, this.getBoundingBox().getMaxZ()), this)) {
-            if(!(entity instanceof EntityMinecartAbstract) || !(entity instanceof InventoryHolder)) {
-                continue;
-            }
-
-            InventoryHolder inventoryHolder = (InventoryHolder) entity;
-            Inventory inventory = inventoryHolder.getInventory();
-
-            for (int i = 0; i < inventory.getSize(); i++) {
-                Item item = inventory.getItem(i);
-
-                if (!item.isNull()) {
-                    Item itemToAdd = item.clone();
-                    itemToAdd.count = 1;
-
-                    if (!this.inventory.canAddItem(itemToAdd)) {
-                        continue;
-                    }
-
-                    InventoryMoveItemEvent ev = new InventoryMoveItemEvent(inventory, this.inventory, this, itemToAdd, InventoryMoveItemEvent.Action.SLOT_CHANGE);
-                    this.server.getPluginManager().callEvent(ev);
-
-                    if (ev.isCancelled()) {
-                        continue;
-                    }
-
-                    int slotPulled = -1;
-                    for (int j = 0; j < this.inventory.getSize(); j++) {
-                        Item itemInInventory = this.inventory.getItem(j);
-                        if (itemInInventory.getId() == 0 || (itemInInventory.getCount() < itemInInventory.getMaxStackSize() && itemInInventory.equals(itemToAdd))) {
-                            itemToAdd.count += itemInInventory.count;
-                            this.inventory.setItem(j, itemToAdd);
-                            slotPulled = j;
-                            break;
-                        }
-                    }
-
-                    if (slotPulled == -1) {
-                        continue;
-                    }
-
-                    item.count--;
-
-                    inventory.setItem(i, item);
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

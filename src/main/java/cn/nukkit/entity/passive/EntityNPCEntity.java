@@ -18,17 +18,12 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
-import cn.nukkit.metadata.MetadataValue;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.network.protocol.NPCRequestPacket;
-import cn.nukkit.plugin.Plugin;
-
-import java.util.List;
 
 /**
  * @author good777LUCKY
  */
-
 @Since("1.4.0.0-PN")
 @PowerNukkitOnly
 public class EntityNPCEntity extends EntityLiving implements EntityNPC, EntityInteractable {
@@ -57,22 +52,22 @@ public class EntityNPCEntity extends EntityLiving implements EntityNPC, EntityIn
     public int getNetworkId() {
         return NETWORK_ID;
     }
-  
+
     @Override
     public float getWidth() {
         return 0.6f;
     }
-  
+
     @Override
     public float getHeight() {
         return 2.1f;
     }
-  
+
     @Override
     public boolean canDoInteraction() {
         return true;
     }
-  
+
     @Override
     public String getInteractButtonText(Player player) {
         return player.isCreative() ? "action.interact.edit" : "action.interact.talk";
@@ -85,6 +80,8 @@ public class EntityNPCEntity extends EntityLiving implements EntityNPC, EntityIn
         return "NPC";
     }
 
+    @PowerNukkitXOnly
+    @Since("1.6.0.0-PNX")
     @Override
     public void initEntity() {
         super.initEntity();
@@ -194,25 +191,5 @@ public class EntityNPCEntity extends EntityLiving implements EntityNPC, EntityIn
     @Since("1.6.0.0-PNX")
     public FormWindowDialog getDialog() {
         return dialog;
-    }
-
-    @Override
-    public void setMetadata(String metadataKey, MetadataValue newMetadataValue) {
-
-    }
-
-    @Override
-    public List<MetadataValue> getMetadata(String metadataKey) {
-        return null;
-    }
-
-    @Override
-    public boolean hasMetadata(String metadataKey) {
-        return false;
-    }
-
-    @Override
-    public void removeMetadata(String metadataKey, Plugin owningPlugin) {
-
     }
 }

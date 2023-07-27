@@ -126,11 +126,6 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
         return tag;
     }
 
-    @Override
-    public CompoundTag getCleanedNBT() {
-        return new CompoundTag();
-    }
-
     public int getAnalogOutput() {
         return this.getItem() == null || this.getItem().getId() == 0 ? 0 : this.getItemRotation() % 8 + 1;
     }
@@ -175,7 +170,9 @@ public class BlockEntityItemFrame extends BlockEntitySpawnable {
         if (this.getItemDropChance() > ThreadLocalRandom.current().nextFloat()) {
             itemEntity = level.dropAndGetItem(add(0.5, 0.25, 0.5), drop);
             if (itemEntity == null) {
-                spawnTo(player);
+                if (player != null) {
+                    spawnTo(player);
+                }
                 return null;
             }
         }

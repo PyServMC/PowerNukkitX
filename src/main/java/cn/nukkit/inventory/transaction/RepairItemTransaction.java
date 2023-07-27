@@ -205,7 +205,7 @@ public class RepairItemTransaction extends InventoryTransaction {
                     } else {
                         hasCompatibleEnchantments = true;
                         if (outputLevel > materialEnchantment.getMaxLevel()) {
-                            outputLevel = Math.max(inputLevel, materialLevel);
+                            outputLevel = materialEnchantment.getMaxLevel();
                         }
 
                         enchantments.put(materialEnchantment.getId(), outputLevel);

@@ -5,15 +5,15 @@ import cn.nukkit.api.Since;
 /**
  * @author Kevims
  */
-@Since("1.6.0.0-PN")
+@Since("FUTURE")
 public enum BossBarColor {
 
-    @Since("1.6.0.0-PN") PINK,
-    @Since("1.6.0.0-PN") BLUE,
-    @Since("1.6.0.0-PN") RED,
-    @Since("1.6.0.0-PN") GREEN,
-    @Since("1.6.0.0-PN") YELLOW,
-    @Since("1.6.0.0-PN") PURPLE,
-    @Since("1.6.0.0-PN") WHITE
+    @Since("FUTURE") PINK,
+    @Since("FUTURE") BLUE,
+    @Since("FUTURE") RED,
+    @Since("FUTURE") GREEN,
+    @Since("FUTURE") YELLOW,
+    @Since("FUTURE") PURPLE,
+    @Since("FUTURE") WHITE
 
 }

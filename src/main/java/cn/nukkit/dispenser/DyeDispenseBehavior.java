@@ -3,7 +3,6 @@ package cn.nukkit.dispenser;
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.block.*;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.particle.SmokeParticle;
 import cn.nukkit.math.BlockFace;
 
 @PowerNukkitOnly
@@ -20,20 +19,15 @@ public class DyeDispenseBehavior extends DefaultDispenseBehavior {
         Block target = block.getSide(face);
 
         if (item.isFertilizer()) {
-            if (target instanceof BlockCrops || target instanceof BlockSapling
-                    || target instanceof BlockTallGrass
-                    || target instanceof BlockDoublePlant || target instanceof BlockMushroom
-                    || target instanceof BlockBambooSapling || target instanceof BlockBamboo
-                    || target instanceof BlockCaveVines || target instanceof BlockNylium
-                    || target instanceof BlockGrass || target instanceof BlockMoss) {
-                if (!target.onActivate(item)) {
-                    target.getLevel().addParticle(new SmokeParticle(block.getDispensePosition()));
-                    item.count++;
-                }
-                return null;
+            if (target instanceof BlockCrops || target instanceof BlockSapling || target instanceof BlockTallGrass
+                    || target instanceof BlockDoublePlant || target instanceof BlockMushroom) {
+                target.onActivate(item);
+
             } else {
                 this.success = false;
             }
+
+            return null;
         }
 
         return super.dispense(block, face, item);

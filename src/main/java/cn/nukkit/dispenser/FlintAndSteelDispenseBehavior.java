@@ -1,12 +1,10 @@
 package cn.nukkit.dispenser;
 
-import cn.nukkit.Server;
 import cn.nukkit.api.PowerNukkitDifference;
 import cn.nukkit.api.PowerNukkitOnly;
 import cn.nukkit.block.Block;
 import cn.nukkit.block.BlockDispenser;
 import cn.nukkit.block.BlockID;
-import cn.nukkit.event.block.BlockIgniteEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Sound;
@@ -25,12 +23,6 @@ public class FlintAndSteelDispenseBehavior extends DefaultDispenseBehavior {
     public @PowerNukkitOnly Item dispense(BlockDispenser block, BlockFace face, Item item) {
         Block target = block.getSide(face);
         item = item.clone();
-
-        BlockIgniteEvent e = new BlockIgniteEvent(target, block, null, BlockIgniteEvent.BlockIgniteCause.FLINT_AND_STEEL);
-        Server.getInstance().getPluginManager().callEvent(e);
-        if (e.isCancelled()) {
-            return null;
-        }
 
         var down = target.down();
         if (down.getId() == BlockID.OBSIDIAN) {

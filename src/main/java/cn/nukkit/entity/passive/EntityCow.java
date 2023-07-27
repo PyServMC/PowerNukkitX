@@ -19,7 +19,6 @@ import cn.nukkit.entity.ai.route.finder.impl.SimpleFlatAStarRouteFinder;
 import cn.nukkit.entity.ai.route.posevaluator.WalkingPosEvaluator;
 import cn.nukkit.entity.ai.sensor.NearestFeedingPlayerSensor;
 import cn.nukkit.entity.ai.sensor.NearestPlayerSensor;
-import cn.nukkit.entity.EntityBalloonable;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.format.FullChunk;
 import cn.nukkit.math.Vector3;
@@ -31,7 +30,7 @@ import java.util.Set;
 /**
  * @author BeYkeRYkt (Nukkit Project)
  */
-public class EntityCow extends EntityAnimal implements EntityWalkable, EntityBalloonable {
+public class EntityCow extends EntityAnimal implements EntityWalkable {
 
     public static final int NETWORK_ID = 11;
 
@@ -111,10 +110,6 @@ public class EntityCow extends EntityAnimal implements EntityWalkable, EntityBal
     }
 
     @Override
-    public float getBalloonMass() {
-        return 1.0F;
-    }
-
     public boolean onInteract(Player player, Item item, Vector3 clickedPos) {
         if (super.onInteract(player, item, clickedPos)) {
             return true;
@@ -128,4 +123,5 @@ public class EntityCow extends EntityAnimal implements EntityWalkable, EntityBal
 
         return false;
     }
+
 }

@@ -239,7 +239,7 @@ public class BlockEntitySign extends BlockEntitySpawnable {
 
     @Override
     public boolean updateCompoundTag(CompoundTag nbt, Player player) {
-        if (!nbt.getString("id").equals(BlockEntity.SIGN)) {
+        if (!nbt.getString("id").equals(BlockEntity.SIGN) && !nbt.getString("id").equals(BlockEntity.HANGING_SIGN)) {
             return false;
         }
         if (player.isOpenSignFront() == null) return false;
@@ -358,7 +358,7 @@ public class BlockEntitySign extends BlockEntitySpawnable {
     }
 
     //验证Line Text是否符合要求
-    protected static void sanitizeText(String[] lines) {
+    private static void sanitizeText(String[] lines) {
         for (int i = 0; i < lines.length; i++) {
             // Don't allow excessive text per line.
             if (lines[i] != null) {

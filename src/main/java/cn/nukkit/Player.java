@@ -4,44 +4,38 @@ import cn.nukkit.AdventureSettings.Type;
 import cn.nukkit.api.*;
 import cn.nukkit.block.*;
 import cn.nukkit.block.customblock.CustomBlock;
-import cn.nukkit.blockentity.*;
+import cn.nukkit.blockentity.BlockEntity;
+import cn.nukkit.blockentity.BlockEntitySign;
+import cn.nukkit.blockentity.BlockEntitySpawnable;
 import cn.nukkit.camera.data.CameraPreset;
 import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandDataVersions;
 import cn.nukkit.command.utils.RawText;
-import cn.nukkit.dialog.handler.FormDialogHandler;
-import cn.nukkit.dialog.response.FormResponseDialog;
 import cn.nukkit.dialog.window.FormWindowDialog;
 import cn.nukkit.entity.*;
-import cn.nukkit.entity.custom.CustomEntity;
 import cn.nukkit.entity.data.*;
-import cn.nukkit.entity.item.*;
-import cn.nukkit.entity.passive.EntityNPCEntity;
+import cn.nukkit.entity.item.EntityFishingHook;
+import cn.nukkit.entity.item.EntityItem;
+import cn.nukkit.entity.item.EntityXPOrb;
 import cn.nukkit.entity.projectile.EntityArrow;
 import cn.nukkit.entity.projectile.EntityProjectile;
 import cn.nukkit.entity.projectile.EntityThrownTrident;
-import cn.nukkit.event.block.LecternPageChangeEvent;
 import cn.nukkit.event.block.WaterFrostEvent;
 import cn.nukkit.event.entity.*;
 import cn.nukkit.event.entity.EntityDamageEvent.DamageCause;
 import cn.nukkit.event.entity.EntityPortalEnterEvent.PortalType;
-import cn.nukkit.event.inventory.*;
+import cn.nukkit.event.inventory.InventoryPickupArrowEvent;
+import cn.nukkit.event.inventory.InventoryPickupItemEvent;
+import cn.nukkit.event.inventory.InventoryPickupTridentEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.event.player.PlayerInteractEvent.Action;
 import cn.nukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import cn.nukkit.event.server.DataPacketReceiveEvent;
 import cn.nukkit.event.server.DataPacketSendEvent;
-import cn.nukkit.event.vehicle.VehicleMoveEvent;
-import cn.nukkit.form.handler.FormResponseHandler;
 import cn.nukkit.form.window.FormWindow;
-import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.inventory.*;
 import cn.nukkit.inventory.transaction.*;
-import cn.nukkit.inventory.transaction.action.InventoryAction;
-import cn.nukkit.inventory.transaction.data.ReleaseItemData;
-import cn.nukkit.inventory.transaction.data.UseItemData;
-import cn.nukkit.inventory.transaction.data.UseItemOnEntityData;
 import cn.nukkit.item.*;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.lang.CommandOutputContainer;
@@ -56,7 +50,6 @@ import cn.nukkit.level.vibration.VibrationEvent;
 import cn.nukkit.level.vibration.VibrationType;
 import cn.nukkit.math.*;
 import cn.nukkit.metadata.MetadataValue;
-import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.*;
 import cn.nukkit.network.CompressionProvider;
 import cn.nukkit.network.Network;
@@ -70,10 +63,8 @@ import cn.nukkit.permission.Permission;
 import cn.nukkit.permission.PermissionAttachment;
 import cn.nukkit.permission.PermissionAttachmentInfo;
 import cn.nukkit.plugin.Plugin;
-import cn.nukkit.positiontracking.PositionTracking;
 import cn.nukkit.positiontracking.PositionTrackingService;
 import cn.nukkit.potion.Effect;
-import cn.nukkit.resourcepacks.ResourcePack;
 import cn.nukkit.scheduler.AsyncTask;
 import cn.nukkit.scheduler.Task;
 import cn.nukkit.scheduler.TaskHandler;
@@ -104,25 +95,17 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
-import org.powernukkit.version.Version;
 
 import javax.annotation.Nullable;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
-import java.nio.ByteOrder;
 import java.util.*;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static cn.nukkit.utils.Utils.dynamic;
@@ -160,7 +143,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public static final @PowerNukkitOnly int CRAFTING_STONECUTTER = 1001;
     public static final @PowerNukkitOnly int CRAFTING_CARTOGRAPHY = 1002;
     public static final @PowerNukkitOnly int CRAFTING_SMITHING = 1003;
-    public static final @PowerNukkitOnly int CRAFTING_LOOM = 1004;
 
     /**
      * 村民交易window id
@@ -181,7 +163,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     public static final int ANVIL_WINDOW_ID = 2;
     public static final int ENCHANT_WINDOW_ID = 3;
     public static final int BEACON_WINDOW_ID = 4;
-    public static final int LOOM_WINDOW_ID = 2;
     public static final @PowerNukkitOnly int GRINDSTONE_WINDOW_ID = dynamic(5);
     @PowerNukkitOnly
     @Since("1.4.0.0-PN")
@@ -245,11 +226,16 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     protected PlayerUIInventory playerUIInventory;
     protected CraftingGrid craftingGrid;
     protected CraftingTransaction craftingTransaction;
-    @Since("1.3.1.0-PN") protected EnchantTransaction enchantTransaction;
-    @Since("1.4.0.0-PN") protected RepairItemTransaction repairItemTransaction;
-    @Since("1.4.0.0-PN") @PowerNukkitOnly protected GrindstoneTransaction grindstoneTransaction;
-    @Since("1.4.0.0-PN") @PowerNukkitOnly protected SmithingTransaction smithingTransaction;
-    @Since("1.4.0.0-PN") @PowerNukkitOnly protected LoomTransaction loomTransaction;
+    @Since("1.3.1.0-PN")
+    protected EnchantTransaction enchantTransaction;
+    @Since("1.4.0.0-PN")
+    protected RepairItemTransaction repairItemTransaction;
+    @Since("1.4.0.0-PN")
+    @PowerNukkitOnly
+    protected GrindstoneTransaction grindstoneTransaction;
+    @Since("1.4.0.0-PN")
+    @PowerNukkitOnly
+    protected SmithingTransaction smithingTransaction;
     @PowerNukkitXOnly
     @Since("1.19.21-r1")
     protected TradingTransaction tradingTransaction;
@@ -317,7 +303,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * Returns the {@link Server#getTick() getTick()} of the last time you ate a chorus fruit, which is used to control the cooldown time for eating chorus fruit.
      */
     protected int lastChorusFruitTeleport = 20;
-    protected int lastIceBomb = 10;
+
     protected int formWindowCount = 0;
     protected Map<Integer, FormWindow> formWindows = new Int2ObjectOpenHashMap<>();
     protected Map<Integer, FormWindow> serverSettings = new Int2ObjectOpenHashMap<>();
@@ -387,8 +373,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     @PowerNukkitOnly
     @Since("1.4.0.0-PN")
     protected int lastPlayerdLevelUpSoundTime = 0;
-
-    private boolean isIgnoringMobEquipmentPacket;
     /**
      * 玩家最后攻击的实体.
      * <p>
@@ -407,7 +391,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     @Getter
     @Setter
     protected List<PlayerFogPacket.Fog> fogStack = new ArrayList<>();
-    private boolean foodEnabled = true;
     /**
      * 最后攻击玩家的实体.
      * <p>
@@ -417,6 +400,8 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     @Since("1.19.30-r1")
     protected Entity lastBeAttackEntity = null;
 
+    private boolean foodEnabled = true;
+
     @Since("1.19.80-r1")
     @PowerNukkitXOnly
     private final @NotNull PlayerHandle playerHandle = new PlayerHandle(this);
@@ -425,6 +410,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
     @PowerNukkitXOnly
     private boolean needDimensionChangeACK = false;
     private Boolean openSignFront = null;
+
 
     /**
      * 单元测试用的构造函数
@@ -506,14 +492,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         return this.server.getNetwork().unpackBatchedPackets(packet, this.server.isEnableSnappy() ? CompressionProvider.SNAPPY : CompressionProvider.ZLIB);
     }
 
-    public int getLastIceBombThrowingTick() {
-        return lastIceBomb;
-    }
-
-    public void onThrowIceBomb() {
-        this.lastIceBomb = this.server.getTick();
-    }
-
     @PowerNukkitXDifference(since = "1.19.60-r1", info = "Auto-break custom blocks if client doesn't send the break data-pack.")
     @PowerNukkitXDifference(since = "1.19.80-r3", info = "change to protected")
     protected void onBlockBreakContinue(Vector3 pos, BlockFace face) {
@@ -572,7 +550,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return;
         }
 
-        if (target.onTouch(this, playerInteractEvent.getAction(), face) != 0) return;
+        if (target.onTouch(this, playerInteractEvent.getAction()) != 0) return;
 
         Block block = target.getSide(face);
         if (block.getId() == Block.FIRE || block.getId() == BlockID.SOUL_FIRE) {
@@ -1739,7 +1717,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
 
         this.getAdventureSettings().update();
         this.inventory.sendContents(this);
-        this.inventory.sendHeldItem(this);
         this.inventory.sendArmorContents(this);
         this.offhandInventory.sendContents(this);
         this.teleport(Location.fromObject(respawnPos.add(0, this.getEyeHeight(), 0), respawnPos.level), TeleportCause.PLAYER_SPAWN);
@@ -3484,47 +3461,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         }
     }
 
-    @Override
-    public void sendMessage(String message) {
-        TextPacket pk = new TextPacket();
-        pk.type = TextPacket.TYPE_RAW;
-        pk.message = this.server.getLanguage().tr(message);
-        this.dataPacket(pk);
-    }
-
-    @PowerNukkitXOnly
-    @Since("1.19.60-r1")
-    public void sendCommandOutput(CommandOutputContainer container) {
-        if (this.level.getGameRules().getBoolean(GameRule.SEND_COMMAND_FEEDBACK)) {
-            var pk = new CommandOutputPacket();
-            pk.messages.addAll(container.getMessages());
-            pk.commandOriginData = new CommandOriginData(CommandOriginData.Origin.PLAYER, this.getUniqueId(), "", null);//Only players can effect
-            pk.type = CommandOutputType.ALL_OUTPUT;//Useless
-            pk.successCount = container.getSuccessCount();//Useless,maybe used for server-client interaction
-            this.dataPacket(pk);
-        }
-    }
-
-    /**
-     * 在玩家聊天栏发送一个JSON文本
-     * <p>
-     * Send a JSON text in the player chat bar
-     *
-     * @param text JSON文本<br>Json text
-     */
-    @PowerNukkitXOnly
-    @Since("1.6.0.0-PNX")
-    public void sendRawTextMessage(RawText text) {
-        TextPacket pk = new TextPacket();
-        pk.type = TextPacket.TYPE_OBJECT;
-        pk.message = text.toRawText();
-        this.dataPacket(pk);
-    }
-
-    private void logTriedToSetButHadInHand(Item tried, Item had) {
-        log.debug("Tried to set item {} but {} had item {} in their hand slot", tried.getId(), this.username, had.getId());
-    }
-
     /**
      * 以该玩家的身份发送一条聊天信息。如果消息以/（正斜杠）开头，它将被视为一个命令。
      * <p>
@@ -3624,7 +3560,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             String message;
             if (isAdmin) {
                 if (!this.isBanned()) {
-                    message = "You were kicked out of the game" + (!reasonString.isEmpty() ? ": " + reasonString : "");
+                    message = "Kicked by admin." + (!reasonString.isEmpty() ? " Reason: " + reasonString : "");
                 } else {
                     message = reasonString;
                 }
@@ -3671,6 +3607,13 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         return this.chunkRadius;
     }
 
+    @Override
+    public void sendMessage(String message) {
+        TextPacket pk = new TextPacket();
+        pk.type = TextPacket.TYPE_RAW;
+        pk.message = this.server.getLanguage().tr(message);
+        this.dataPacket(pk);
+    }
 
     @Override
     public void sendMessage(TextContainer message) {
@@ -3679,6 +3622,35 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             return;
         }
         this.sendMessage(message.getText());
+    }
+
+    @PowerNukkitXOnly
+    @Since("1.19.60-r1")
+    public void sendCommandOutput(CommandOutputContainer container) {
+        if (this.level.getGameRules().getBoolean(GameRule.SEND_COMMAND_FEEDBACK)) {
+            var pk = new CommandOutputPacket();
+            pk.messages.addAll(container.getMessages());
+            pk.commandOriginData = new CommandOriginData(CommandOriginData.Origin.PLAYER, this.getUniqueId(), "", null);//Only players can effect
+            pk.type = CommandOutputType.ALL_OUTPUT;//Useless
+            pk.successCount = container.getSuccessCount();//Useless,maybe used for server-client interaction
+            this.dataPacket(pk);
+        }
+    }
+
+    /**
+     * 在玩家聊天栏发送一个JSON文本
+     * <p>
+     * Send a JSON text in the player chat bar
+     *
+     * @param text JSON文本<br>Json text
+     */
+    @PowerNukkitXOnly
+    @Since("1.6.0.0-PNX")
+    public void sendRawTextMessage(RawText text) {
+        TextPacket pk = new TextPacket();
+        pk.type = TextPacket.TYPE_OBJECT;
+        pk.message = text.toRawText();
+        this.dataPacket(pk);
     }
 
     /**
@@ -4074,7 +4046,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
 
             super.close();
-            
+
             this.interfaz.close(this, notify ? reason : "");
 
             if (this.loggedIn) {
@@ -4105,10 +4077,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
             }
 
             this.riding = null;
-        }
-
-        if (!this.closed) {
-            super.close();
         }
 
         if (this.perm != null) {
@@ -5278,7 +5246,7 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
      * Reset crafting grid type.
      */
     public void resetCraftingGridType() {
-        if (this.craftingGrid != null && this.inventory != null) {
+        if (this.craftingGrid != null) {
             Item[] drops = this.inventory.addItem(this.craftingGrid.getContents().values().toArray(Item.EMPTY_ARRAY));
 
             if (drops.length > 0) {
@@ -6135,17 +6103,6 @@ public class Player extends EntityHuman implements CommandSender, InventoryHolde
         if (slot == DisplaySlot.BELOW_NAME) {
             this.setScoreTag("");
         }
-    }
-    @PowerNukkitOnly
-    @Since("1.6.0.0-PN")
-    public boolean isIgnoringMobEquipmentPacket() {
-        return this.isIgnoringMobEquipmentPacket;
-    }
-
-    @PowerNukkitOnly
-    @Since("1.6.0.0-PN")
-    public void setIgnoringMobEquipmentPacket(boolean isIgnoringMobEquipmentPacket) {
-        this.isIgnoringMobEquipmentPacket = isIgnoringMobEquipmentPacket;
     }
 
     @Override

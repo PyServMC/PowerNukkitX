@@ -65,7 +65,7 @@ public class BlockRespawnAnchor extends BlockMeta {
     }
 
     @PowerNukkitOnly
-    @Since("1.6.0.0-PN")
+    @Since("FUTURE")
     public BlockRespawnAnchor(int meta) throws InvalidBlockPropertyMetaException {
         super(meta);
     }

@@ -16,5 +16,3 @@ logs
 /worlds
 #.mvn
 dependency-reduced-pom.xml
-*
-!/target/powernukkit-*.jar
